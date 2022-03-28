@@ -12,7 +12,7 @@ Token Provisioning
         Note right of CYBS: Require fields:<br> -merchantID<br> -batchID<br> -subscription_paymentMethod<br> -merchantReferenceCode<br> -billTo_firstName<br> -billTo_lastName<br> -billTo_street1<br> -billTo_city<br> -billTo_state<br> -billTo_postalCode<br> -billTo_phoneNumber<br> -billTo_email<br> -card_accountNumber
         PCIPGW->>CYBS: 4.[API]Upload csv file for token creation
         CYBS->>PCIPGW: 5.[API]Return upload result (200)
-        Loop Collect check file status
+        Loop Check file status
             PCIPGW->>CYBS: 5.1.[API]Check File status
             CYBS->>PCIPGW: 5.2.[API]Return status
         end
@@ -39,7 +39,7 @@ Create Payment
         Note left of PCIPGW: If on-us will be internal making payment
         PCIPGW->>CYBS: 4.[API]Upload csv file for payment by given token id
         CYBS->>PCIPGW: 5.[API]Return upload result (200)
-        Loop Collect check file status
+        Loop Check file status
             PCIPGW->>CYBS: 5.1.[API]Check File status
             CYBS->>PCIPGW: 5.2.[API]Return status
         end
