@@ -12,11 +12,11 @@ Token Provisioning
         Note right of CYBS: Require fields:<br> -merchantID<br> -batchID<br> -subscription_paymentMethod<br> -merchantReferenceCode<br> -billTo_firstName<br> -billTo_lastName<br> -billTo_street1<br> -billTo_city<br> -billTo_state<br> -billTo_postalCode<br> -billTo_phoneNumber<br> -billTo_email<br> -card_accountNumber
         PCIPGW->>CYBS: 4.[API]Upload csv file for token creation
         CYBS->>PCIPGW: 5.[API]Return upload result (200)
-        Note right of PCIPGW: File Status:<br> -404 not found batch detail<br> -Validated<br> -Completed/Incomplete
         Loop Collect check file status
             PCIPGW->>CYBS: 5.1.[API]Check File status
             CYBS->>PCIPGW: 5.2.[API]Return status
         end
+        Note right of PCIPGW: File Status:<br> -404 not found batch detail<br> -Validated<br> -Completed/Incomplete<br>*If the final status is Completed then get batch detail(.csv)
         PCIPGW->>CYBS: 6.[API]Get txn batch detail<br>to get status & request_id
         CYBS->>PCIPGW: 7.[API]Return csv file
         Note right of PCIPGW: If reason_code is 100 then the token is created
@@ -39,11 +39,11 @@ Create Payment
         Note left of PCIPGW: If on-us will be internal making payment
         PCIPGW->>CYBS: 4.[API]Upload csv file for payment by given token id
         CYBS->>PCIPGW: 5.[API]Return upload result (200)
-        Note right of PCIPGW: File Status:<br> -404 not found batch detail<br> -Validated<br> -Processing<br> -Completed/Incomplete
         Loop Collect check file status
             PCIPGW->>CYBS: 5.1.[API]Check File status
             CYBS->>PCIPGW: 5.2.[API]Return status
         end
+        Note right of PCIPGW: File Status:<br> -404 not found batch detail<br> -Validated<br> -Processing<br> -Completed/Incomplete<br>*If the final status is Completed then get batch detail(.csv)
         PCIPGW->>CYBS: 6.[API]Get txn batch detail<br>to get payment status
         CYBS->>PCIPGW: 7.[API]Return csv file
         Note right of PCIPGW: If reason_code is 100 then the payment is performed
