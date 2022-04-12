@@ -24,8 +24,14 @@ Token Recurring
           PCIPGW->>PCIPGW: 5.2.1 Process internal create token
         end
         PCIPGW->>PCIPGW: 6. PCIPGW update token creation status on merchant portal to notice merchant user
-        
-        
+```
+```mermaid
+    sequenceDiagram
+        Actor Merchant
+        participant PCIPGW
+        participant KPGW
+        participant CYBS
+        participant CLK
         Note over Merchant,CLK: Process a Payment
         Merchant->>PCIPGW: 1.[UI]Upload batch file for payment
         PCIPGW->>Merchant: 2.[UI]Validate file format & return result
@@ -51,8 +57,14 @@ Token Recurring
           end
         end
         PCIPGW->>PCIPGW: 6. PCIPGW update payment status on merchant portal to notice merchant user
-        
-        
+```
+```mermaid
+    sequenceDiagram
+        Actor Merchant
+        participant PCIPGW
+        participant KPGW
+        participant CYBS
+        participant CLK
         Note over Merchant,CLK: Process a Refund
         Merchant->>PCIPGW: 1.[UI]Upload batch file for refund
         PCIPGW->>Merchant: 2.[UI]Validate file format & return result
