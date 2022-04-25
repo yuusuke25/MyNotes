@@ -9,7 +9,7 @@ Token Recurring
         Note over Merchant,CLK: Token Provisioning
         Merchant->>PCIPGW: 1.[UI]Upload batch file for token creation
         PCIPGW->>Merchant: 2.[UI]Validate file format & return result
-        PCIPGW->>PCIPGW: 3.Delay for 30 mins 
+        PCIPGW->>PCIPGW: 3.Waiting batch job trigger
         PCIPGW->>PCIPGW: 4.Check on-us & off-us
         par 5.1 For OFF-US (cybs)
           PCIPGW->>CYBS: 5.1.1 [API]Upload csv file for token creation
@@ -23,7 +23,7 @@ Token Recurring
         and 5.2 For ON-US
           PCIPGW->>PCIPGW: 5.2.1 Process internal create token
         end
-        PCIPGW->>PCIPGW: 6. PCIPGW update/insert data into database and allow merchant user to download result file.
+        PCIPGW->>PCIPGW: 6. PCIPGW insert data into database (card & customer table) and allow merchant user to download result file.
 ```
 ```mermaid
     sequenceDiagram
