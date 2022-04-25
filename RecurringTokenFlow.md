@@ -14,16 +14,16 @@ Token Recurring
         par 5.1 For OFF-US (cybs)
           PCIPGW->>CYBS: 5.1.1 [API]Upload csv file for token creation
           CYBS->>PCIPGW: 5.1.2 [API]Return upload result (200)
-          Loop Check file status
-              PCIPGW->>CYBS: 5.1.3 [API]Check File status
-              CYBS->>PCIPGW: 5.1.4 [API]Return status
+          Loop Get File ID from File List
+              PCIPGW->>CYBS: 5.1.3 [API]Get File list by given current date
+              CYBS->>PCIPGW: 5.1.4 [API]Return File list
           end
-          PCIPGW->>CYBS: 5.1.5 [API]Get txn batch detail<br>to get txn status & token_id*
-          CYBS->>PCIPGW: 5.1.6 [API]Return csv file
+          PCIPGW->>CYBS: 5.1.5 [API]Get Token ID by given File ID
+          CYBS->>PCIPGW: 5.1.6 [API]Return Token ID
         and 5.2 For ON-US
           PCIPGW->>PCIPGW: 5.2.1 Process internal create token
         end
-        PCIPGW->>PCIPGW: 6. PCIPGW update token creation status on merchant portal to notice merchant user
+        PCIPGW->>PCIPGW: 6. PCIPGW update/insert data into database and allow merchant user to download result file.
 ```
 ```mermaid
     sequenceDiagram
