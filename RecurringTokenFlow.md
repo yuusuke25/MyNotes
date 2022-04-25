@@ -24,6 +24,8 @@ Token Recurring
           PCIPGW->>PCIPGW: 5.2.1 Process internal create token
         end
         PCIPGW->>PCIPGW: 6. PCIPGW insert data into database (card & customer table) and allow merchant user to download result file.
+        Merchant->>PCIPGW: 7.[UI]Refresh the merchant portal page and download result file
+        PCIPGW->>Merchant: 8.[UI]Generate csv file and merchant user get csv file download to the device.
 ```
 ```mermaid
     sequenceDiagram
