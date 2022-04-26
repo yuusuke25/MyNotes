@@ -43,13 +43,13 @@ Token Recurring
         par 5.1 For OFF-US (cybs)
           PCIPGW->>CYBS: 5.1.1 [API]Upload csv file for payment by given token id
           CYBS->>PCIPGW: 5.1.2 [API]Return upload result (200)
-          Loop Check file status
-              PCIPGW->>CYBS: 5.1.3 [API]Check File status
-              CYBS->>PCIPGW: 5.1.4 [API]Return status
+          Loop Get File ID from File List
+              PCIPGW->>CYBS: 5.1.3 [API]Get File list by given current date
+              CYBS->>PCIPGW: 5.1.4 [API]Return File list
           end
-          PCIPGW->>CYBS: 5.1.5 [API]Get txn batch detail<br>to get payment status
-          CYBS->>PCIPGW: 5.1.6 [API]Return csv file
-          Note right of PCIPGW: If reason_code is 100 then the payment is performed
+          PCIPGW->>CYBS: 5.1.5 [API]Get txn detail by given File ID
+          CYBS->>PCIPGW: 5.1.6 [API]Return txn detail
+          Note right of PCIPGW: If ccAuthReply_processorResponse is 00 then the payment is authorized
         and 5.2 For ON-US
           PCIPGW->>KPGW: 5.2.1 [API]Send JSON Array with bulkChargeId
           KPGW->>PCIPGW: 5.2.2 [API]Return 00 for acknowledge
