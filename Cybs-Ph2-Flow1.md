@@ -3,7 +3,7 @@ Pay and save with Embedded (as-is)
     sequenceDiagram
         Customer->>Merchant:1.confirm to pay
         Merchant->>PCIPGW:2.create token_id
-        PCIPGW->>Merchant:3.return return token_id
+        PCIPGW->>Merchant:3.return token_id
         Merchant->>PCIPGW:4.create charge (mode=token_id)
         PCIPGW->>3DS:5.return charge_id & redirect_url
         3DS->>3DS:6.send and verify OTP
@@ -23,8 +23,8 @@ Pay and save with Embedded (Cybs)
 ```mermaid
     sequenceDiagram
         Customer->>Merchant:1.confirm to pay
-        Merchant->>PCIPGW:2.request charge
-        PCIPGW->>Merchant:3.return URL
+        Merchant->>PCIPGW:2.create token_id
+        PCIPGW->>Merchant:3.return token_id
         Merchant->>PCIPGW:4.create charge (mode=token_id)
         PCIPGW->>3DS:5.return charge_id & redirect_url
         3DS->>3DS:6.send and verify OTP
