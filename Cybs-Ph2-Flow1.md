@@ -4,7 +4,7 @@ Pay and save with Embedded (as-is)
         Customer->>Merchant:1.confirm to pay
         Merchant->>PCIPGW:2.create token_id
         PCIPGW->>Merchant:3.return token_id
-        Merchant->>PCIPGW:4.create charge (mode=token_id)
+        Merchant->>PCIPGW:4.create charge (mode=token)
         PCIPGW->>3DS:5.return charge_id & redirect_url
         3DS->>3DS:6.send and verify OTP
         3DS->>PCIPGW:7.return OTP result with ECI,CAVV
@@ -25,7 +25,7 @@ Pay and save with Embedded (Cybs)
         Customer->>Merchant:1.confirm to pay
         Merchant->>PCIPGW:2.create token_id
         PCIPGW->>Merchant:3.return token_id
-        Merchant->>PCIPGW:4.create charge (mode=token_id)
+        Merchant->>PCIPGW:4.create charge (mode=token)
         PCIPGW->>3DS:5.return charge_id & redirect_url
         3DS->>3DS:6.send and verify OTP
         3DS->>PCIPGW:7.return OTP result with ECI,CAVV
@@ -107,12 +107,14 @@ Create Customer (cybs)
 ```mermaid
     sequenceDiagram
         Merchant->>PCIPGW:1.create customer (mode=fullpan)
-        PCIPGW->>Merchant:2.return customer_id and card_id
+        PCIPGW->CYBS:1.1.Request Create CybsTokenID
+        CYBS->PCIPGW:1.2.return CybsTokenID
+        PCIPGW->>Merchant:2.return customer_id and card_id<br>(which is mapped with CybsTokenID)
 
         Merchant->>PCIPGW:3.create charge (mode=customer,customer_id,card_id)
-        PCIPGW->CYBS:3.1.Request Create CybsTokenID
-        CYBS->PCIPGW:3.2.return CybsTokenID
-        PCIPGW->CYBS:3.3.Payment with CybsTokenID,ECI,CAVV
-        CYBS->PCIPGW:3.4.Return payment result
+        PCIPGW->CYBS:3.1.Payment with CybsTokenID
+        CYBS->PCIPGW:3.2.Return payment result
         PCIPGW->>Merchant:4.return charge_id, transaction_state, transaction_status
 ```
+
+
