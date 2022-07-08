@@ -8,7 +8,7 @@ Pay and save with Embedded (as-is)
         PCIPGW->>3DS:5.return charge_id & redirect_url
         3DS->>3DS:6.send and verify OTP
         3DS->>PCIPGW:7.return OTP result with ECI,CAVV
-        PCIPGW->>KPGW:8.request charge
+        PCIPGW->>KPGW:8.request charge,ECI,CAVV
         KPGW->>CLK:9.request charge
         CLK->>KPGW:10.return payment result
         KPGW->>PCIPGW:11.return payment result
@@ -51,7 +51,7 @@ Add card (as-is)
         PCIPGW->>3DS:5.return charge_id & redirect_url
         3DS->>3DS:6.send and verify OTP
         3DS->>PCIPGW:7.return OTP result with ECI,CAVV
-        PCIPGW->>KPGW:8.request charge (amt 0 for VS,MC)
+        PCIPGW->>KPGW:8.request charge,ECI,CAVV (amt 0 for VS,MC)
         KPGW->>CLK:9.request charge
         CLK->>KPGW:10.return payment result
         KPGW->>PCIPGW:11.return payment result
@@ -61,7 +61,7 @@ Add card (as-is)
         PCIPGW->>Merchant:14.return customer_id and card_id
 
         Merchant->>PCIPGW:15.create charge (mode=customer,customer_id,card_id)
-        PCIPGW->>Merchant:16.return customer_id and card_id
+        PCIPGW->>Merchant:16.return charge_id, transaction_state, transaction_status
 ```
 
 Add card (Cybs)
@@ -84,5 +84,35 @@ Add card (Cybs)
         PCIPGW->Merchant:14.return customer_id and card_id <br>(which is mapped with CybsTokenID)
 
         Merchant->PCIPGW:15.create charge (mode=customer,customer_id,card_id)
-        PCIPGW->Merchant:16.return customer_id and card_id
+        PCIPGW->Merchant:16.return charge_id, transaction_state, transaction_status
+```
+
+
+Create Customer (as-is)
+```mermaid
+    sequenceDiagram
+        Merchant->>PCIPGW:1.create customer (mode=fullpan)
+        PCIPGW->>Merchant:2.return customer_id and card_id
+
+        Merchant->>PCIPGW:3.create charge (mode=customer,customer_id,card_id)
+        PCIPGW->>KPGW:3.1.request charge,ECI,CAVV (amt 0 for VS,MC)
+        KPGW->>CLK:3.2.request charge
+        CLK->>KPGW:3.3.return payment result
+        KPGW->>PCIPGW:3.4.return payment result
+        PCIPGW->>Merchant:4.return charge_id, transaction_state, transaction_status
+```
+
+
+Create Customer (cybs)
+```mermaid
+    sequenceDiagram
+        Merchant->>PCIPGW:1.create customer (mode=fullpan)
+        PCIPGW->>Merchant:2.return customer_id and card_id
+
+        Merchant->>PCIPGW:3.create charge (mode=customer,customer_id,card_id)
+        PCIPGW->CYBS:3.1.Request Create CybsTokenID
+        CYBS->PCIPGW:3.2.return CybsTokenID
+        PCIPGW->CYBS:3.3.Payment with CybsTokenID,ECI,CAVV
+        CYBS->PCIPGW:3.4.Return payment result
+        PCIPGW->>Merchant:4.return charge_id, transaction_state, transaction_status
 ```
