@@ -37,7 +37,6 @@ Refund (cybs)
         MP_BP->>PCIPGW_BE:0.Request by Refund Button
         PCIPGW_BE->>KPGW:1.Refund a settled transaction
         KPGW->>PCIPGW_BE:2.Return Refund result
-        
         Note over MP_BP,CLK: KPGW batch job to process refund at xx:xx pm
         KPGW->>CLK:1.Request Refund
         CLK->>2.Return Refund result
