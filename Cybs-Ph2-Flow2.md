@@ -26,9 +26,21 @@ Settlement (cybs)
 void (cybs)
 ```mermaid
     sequenceDiagram
-        MP_BP->>PCIPGW_BE:0.Request by Void Button
-        PCIPGW_BE->>CYBS:1.Void a payment
-        CYBS->>PCIPGW:2.Return void result
+        alt isInternalCharge=true
+            rect rgb(220, 251, 255)
+                MP_BP->>PCIPGW_BE:0.Request by Void Button
+                PCIPGW_BE->>KPGW:1.Void a payment
+                KPGW->>CLK:2.Request void
+                CLK->>KPGW:3.Return void result
+                KPGW->>PCIPGW_BE:4.Return void result
+            end
+        else isInternalCharge=false
+            rect rgb(220, 255, 229)
+                MP_BP->>PCIPGW_BE:0.Request by Void Button
+                PCIPGW_BE->>CYBS:1.Void a payment
+                CYBS->>PCIPGW_BE:2.Return void result
+            end
+        end
 ```
 
 Refund (cybs)
