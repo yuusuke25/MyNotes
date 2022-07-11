@@ -2,41 +2,63 @@ Pay and save with Embedded (as-is)
 ```mermaid
     sequenceDiagram
         Customer->>Merchant:1.confirm to pay
-        Merchant->>PCIPGW:2.create token_id
+        Merchant->>PCIPGW:2.Request with Kasikorn Embedded JS
         PCIPGW->>Merchant:3.return token_id
-        Merchant->>PCIPGW:4.create charge (mode=token)
-        PCIPGW->>3DS:5.return charge_id & redirect_url
-        3DS->>3DS:6.send and verify OTP
-        3DS->>PCIPGW:7.return OTP result with ECI,CAVV
-        PCIPGW->>KPGW:8.request charge,ECI,CAVV
-        KPGW->>CLK:9.request charge
-        CLK->>KPGW:10.return payment result
-        KPGW->>PCIPGW:11.return payment result
-        PCIPGW->>Merchant:12.return charge_id & payment result
+        
+        Merchant->>PCIPGW:4.Call create Charge API (mode=token,tokenid)
+        PCIPGW->>Merchant:5.return chargeid & redirect_url
+        
+        
+        Merchant->>3DS:6.Redirect to redirect_url
+        3DS->>3DS:7.send and verify OTP
+        3DS->>PCIPGW:8.return OTP result with ECI,CAVV
+        
+        rect rgb(220, 255, 229)
+            PCIPGW->>KPGW:9.request charge,ECI,CAVV
+            KPGW->>CLK:10.request charge
+            CLK->>KPGW:11.return payment result
+            KPGW->>PCIPGW:12.return payment result
+        end
+        
+        PCIPGW->>Merchant:13.return chargeid & payment result
 
-        Merchant->>PCIPGW:13.create customer (mode=token)
-        PCIPGW->>Merchant:14.return customer_id and card_id
+        Merchant->>PCIPGW:14.create Customer API (mode=token,tokenid,email) to save card with KPGW
+        PCIPGW->>Merchant:15.return customerid and cardid (for payment next time)
 
 ```
 
-Pay and save with Embedded (Cybs)
+Pay and save with Embedded (to-be)
 ```mermaid
     sequenceDiagram
         Customer->>Merchant:1.confirm to pay
-        Merchant->>PCIPGW:2.create token_id
+        Merchant->>PCIPGW:2.Request with Kasikorn Embedded JS
         PCIPGW->>Merchant:3.return token_id
-        Merchant->>PCIPGW:4.create charge (mode=token)
-        PCIPGW->>3DS:5.return charge_id & redirect_url
-        3DS->>3DS:6.send and verify OTP
-        3DS->>PCIPGW:7.return OTP result with ECI,CAVV
-        PCIPGW->>CYBS:8.Request Create CybsTokenID
-        CYBS->>PCIPGW:9.return CybsTokenID
-        PCIPGW->>CYBS:10.Payment with CybsTokenID,ECI,CAVV
-        CYBS->>PCIPGW:11.Return payment result
-        PCIPGW->>Merchant:12.return charge_id & payment result
+        Merchant->>PCIPGW:4.Call create Charge API (mode=token,tokenid)
+        PCIPGW->>Merchant:5.return chargeid & redirect_url
+        
+        Merchant->>3DS:6.Redirect to redirect_url
+        3DS->>3DS:7.send and verify OTP
+        3DS->>PCIPGW:8.return OTP result with ECI,CAVV
+            
+        Note right of Merchant: Check & Flag isInternalCharge
+        rect rgb(220, 251, 255)
+            PCIPGW->>CYBS:9.Request Create CybsTokenID
+            CYBS->>PCIPGW:10.return CybsTokenID
+            PCIPGW->>CYBS:11.Payment with CybsTokenID,ECI,CAVV
+            CYBS->>PCIPGW:12.Return payment result
+        end
+        
+        rect rgb(220, 255, 229)
+            PCIPGW->>KPGW:9.request charge,ECI,CAVV
+            KPGW->>CLK:10.request charge
+            CLK->>KPGW:11.return payment result
+            KPGW->>PCIPGW:12.return payment result
+        end
+        
+        PCIPGW->>Merchant:13.return chargeid & payment result
 
-        Merchant->>PCIPGW:13.create customer (mode=token)
-        PCIPGW->>Merchant:14.return customer_id and card_id <br>(which is mapped with CybsTokenID)
+        Merchant->>PCIPGW:14.create Customer API (mode=token,tokenid,email) to save card with KPGW
+        PCIPGW->>Merchant:15.return customerid and cardid (for payment next time)
 
 ```
 
