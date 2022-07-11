@@ -39,5 +39,5 @@ Refund (cybs)
         KPGW->>PCIPGW_BE:2.Return Refund result
         Note over MP_BP,CLK: KPGW batch job to process refund at xx:xx pm
         KPGW->>CLK:1.Request Refund
-        CLK->>2.Return Refund result
+        CLK->>KPGW:2.Return Refund result
 ```
