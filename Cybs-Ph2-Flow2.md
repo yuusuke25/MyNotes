@@ -5,16 +5,20 @@ Settlement (cybs)
         CYBS->>PCIPGW:2.Return payment result
         
         alt manual settlement
+         rect rgb(220, 251, 255)
           Merchant->>PCIPGW:3a.Request settlement
           loop txn by txn
             PCIPGW->>CYBS:4a.Capture a payment
           end
           PCIPGW->>Merchant:5a.Return settlement result
+         end
         else auto settlement
+         rect rgb(220, 255, 229)
           Batch->>PCIPGW:3bstart settlement at xx:xx pm
           loop txn by txn
             PCIPGW->>CYBS:4b.Capture a payment
           end
+         end
         end
 ```
 
