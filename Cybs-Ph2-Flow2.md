@@ -1,22 +1,21 @@
 Settlement (cybs)
 ```mermaid
-    sequenceDiagram
-        PCIPGW->>CYBS:1.Payment with CybsTokenID,ECI,CAVV
-        CYBS->>PCIPGW:2.Return payment result
-        
+    sequenceDiagram        
         alt manual settlement
          rect rgb(220, 251, 255)
-          Merchant->>PCIPGW:3a.Request settlement
+          Merchant->>PCIPGW:3.Request settlement
           loop txn by txn
-            PCIPGW->>CYBS:4a.Capture a payment
+            PCIPGW->>CYBS:4.Capture a payment
+            CYBS->>PCIPGW:5.Return Capture result
           end
-          PCIPGW->>Merchant:5a.Return settlement result
+          PCIPGW->>Merchant:6.Return settlement result
          end
         else auto settlement
          rect rgb(220, 255, 229)
-          Batch->>PCIPGW:3bstart settlement at xx:xx pm
+          Batch->>PCIPGW:3.start settlement at xx:xx pm
           loop txn by txn
-            PCIPGW->>CYBS:4b.Capture a payment
+            PCIPGW->>CYBS:4.Capture a payment
+            CYBS->>PCIPGW:5.Return Capture result
           end
          end
         end
