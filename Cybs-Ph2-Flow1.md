@@ -1,32 +1,34 @@
 Pay and save with Embedded (as-is)
 ```mermaid
     sequenceDiagram
+    autonumber
         rect rgb(255, 220, 220)
-            Customer->>Merchant:1.confirm to pay
-            Merchant->>+PCIPGW:2.Request with Kasikorn Embedded JS
-            PCIPGW->>-Merchant:3.return token_id
+            %% Customer->>Merchant:confirm to pay
+            Merchant->>+PCIPGW:Request with Kasikorn Embedded JS
+            PCIPGW->>-Merchant:return token_id
 
-            Merchant->>+PCIPGW:4.Call create Charge API (mode=token,tokenid)
-            PCIPGW->>-Merchant:5.return chargeid & redirect_url
+            Merchant->>+PCIPGW:Call create Charge API (mode=token,tokenid)
+            PCIPGW->>-Merchant:return chargeid & redirect_url
 
 
-            Merchant->>3DS:6.Redirect to redirect_url
-            3DS->>3DS:7.send and verify OTP
-            3DS->>PCIPGW:8.return OTP result with ECI,CAVV
+            Merchant->>+PCIPGW:Redirect to redirect_url
+            PCIPGW->>+3DS:Redirect to redirect_url
+            3DS->>3DS:send and verify OTP
+            3DS->>-PCIPGW:return OTP result with ECI,CAVV
 
             rect rgb(220, 255, 229)
-                PCIPGW->>+KPGW:9.request charge,ECI,CAVV
-                KPGW->>+CLK:10.request charge
-                CLK->>-KPGW:11.return payment result
-                KPGW->>-PCIPGW:12.return payment result
+                PCIPGW->>+KPGW:request charge,ECI,CAVV
+                KPGW->>+CLK:request charge
+                CLK->>-KPGW:return payment result
+                KPGW->>-PCIPGW:return payment result
             end
 
-            PCIPGW->>Merchant:13.return chargeid & payment result
+            PCIPGW->>-Merchant:return chargeid & payment result
         end
-        
+        autonumber 1
         rect rgb(252, 255, 220)
-            Merchant->>+PCIPGW:1.Call create Customer API (mode=token,tokenid,email) to save card with KPGW
-            PCIPGW->>-Merchant:2.return customerid and cardid (for payment next time)
+            Merchant->>+PCIPGW:Call create Customer API (mode=token,tokenid,email) to save card with KPGW
+            PCIPGW->>-Merchant:return customerid and cardid (for payment next time)
         end
 
 ```
@@ -34,41 +36,43 @@ Pay and save with Embedded (as-is)
 Pay and save with Embedded (to-be)
 ```mermaid
     sequenceDiagram
+        autonumber 1
         rect rgb(255, 220, 220)
-            Customer->>Merchant:1.confirm to pay
-            Merchant->>+PCIPGW:2.Request with Kasikorn Embedded JS
-            PCIPGW->>-Merchant:3.return token_id
-            Merchant->>+PCIPGW:4.Call create Charge API (mode=token,tokenid)
-            PCIPGW->>-Merchant:5.return chargeid & redirect_url
+            %% Customer->>Merchant:confirm to pay
+            Merchant->>+PCIPGW:Request with Kasikorn Embedded JS
+            PCIPGW->>-Merchant:return token_id
+            Merchant->>+PCIPGW:Call create Charge API (mode=token,tokenid)
+            PCIPGW->>-Merchant:return chargeid & redirect_url
 
-            Merchant->>3DS:6.Redirect to redirect_url
-            3DS->>3DS:7.send and verify OTP
-            3DS->>PCIPGW:8.return OTP result with ECI,CAVV
+            Merchant->>+PCIPGW:Redirect to redirect_url
+            PCIPGW->>+3DS:Redirect to redirect_url
+            3DS->>3DS:send and verify OTP
+            3DS->>-PCIPGW:return OTP result with ECI,CAVV
 
             Note left of PCIPGW: Check & flag value for isInternalCharge
-
-            rect rgb(220, 255, 229)
-                Note right of PCIPGW: isInternalCharge=true
-                PCIPGW->>+KPGW:9.request charge,ECI,CAVV
-                KPGW->>+CLK:10.request charge
-                CLK->>-KPGW:11.return payment result
-                KPGW->>-PCIPGW:12.return payment result
+            alt
+                rect rgb(220, 255, 229)
+                    Note right of PCIPGW: isInternalCharge=true
+                    PCIPGW->>+KPGW:request charge,ECI,CAVV
+                    KPGW->>+CLK:request charge
+                    CLK->>-KPGW:return payment result
+                    KPGW->>-PCIPGW:return payment result
+                end
+            else
+                rect rgb(220, 251, 255)
+                    Note right of PCIPGW: isInternalCharge=false
+                    PCIPGW->>+CYBS:Request Create CybsTokenID
+                    CYBS->>-PCIPGW:return CybsTokenID
+                    PCIPGW->>+CYBS:Payment with CybsTokenID,ECI,CAVV
+                    CYBS->>-PCIPGW:Return payment result
+                end
             end
-
-            rect rgb(220, 251, 255)
-                Note right of PCIPGW: isInternalCharge=false
-                PCIPGW->>+CYBS:9.Request Create CybsTokenID
-                CYBS->>-PCIPGW:10.return CybsTokenID
-                PCIPGW->>+CYBS:11.Payment with CybsTokenID,ECI,CAVV
-                CYBS->>-PCIPGW:12.Return payment result
-            end
-
-            PCIPGW->>Merchant:13.return chargeid & payment result
+            PCIPGW->>-Merchant:return chargeid & payment result
         end
-        
+        autonumber 1
         rect rgb(252, 255, 220)
-            Merchant->>+PCIPGW:1.Call create Customer API (mode=token,tokenid,email) to save card with KPGW
-            PCIPGW->>-Merchant:2.return customerid and cardid (for payment next time)
+            Merchant->>+PCIPGW:Call create Customer API (mode=token,tokenid,email) to save card with KPGW
+            PCIPGW->>-Merchant:return customerid and cardid (for payment next time)
         end
 
 ```
@@ -77,94 +81,103 @@ Pay and save with Embedded (to-be)
 Add card (as-is)
 ```mermaid
     sequenceDiagram
+        autonumber 1
         rect rgb(252, 255, 220)
-            Customer->>Merchant:1.confirm to add card on Kbank UI
-            Merchant->>+PCIPGW:2.KbankUI call create Token API (mode=fullpan,card_number,card_exp,cvv)
-            PCIPGW->>-Merchant:3.return tokenid
+            && Customer->>Merchant:confirm to add card on Kbank UI
+            Merchant->>+PCIPGW:KbankUI call create Token API (mode=fullpan,card_number,card_exp,cvv)
+            PCIPGW->>-Merchant:return tokenid
 
-            Merchant->>+PCIPGW:4.Call create Charge API (mode=register3d,token_id)
-            PCIPGW->>-Merchant:5.return chargeid & redirect_url
+            Merchant->>+PCIPGW:Call create Charge API (mode=register3d,token_id)
+            PCIPGW->>-Merchant:return chargeid & redirect_url
 
-            Merchant->>3DS:6.Redirect to redirect_url
-            3DS->>3DS:7.send and verify OTP
-            3DS->>PCIPGW:8.return OTP result with ECI,CAVV
+            Merchant->>+PCIPGW:Redirect to redirect_url
+            PCIPGW->>+3DS:Redirect to redirect_url
+            3DS->>3DS:send and verify OTP
+            3DS->>-PCIPGW:return OTP result with ECI,CAVV
 
             rect rgb(220, 255, 229)
-                PCIPGW->>+KPGW:9.request charge,ECI,CAVV (amt 0 for VS,MC)
-                KPGW->>+CLK:10.request charge
-                CLK->>-KPGW:11.return payment result
-                KPGW->>-PCIPGW:12.return payment result
+                PCIPGW->>+KPGW:request charge,ECI,CAVV (amt 0 for VS,MC)
+                KPGW->>+CLK:request charge
+                CLK->>-KPGW:return payment result
+                KPGW->>-PCIPGW:return payment result
             end
 
-            PCIPGW->>Merchant:13.return charge_id & payment result
+            PCIPGW->>-Merchant:return charge_id & payment result
 
-            Merchant->>+PCIPGW:14.Call create Customer API (mode=token,token_id,email)
-            PCIPGW->>-Merchant:15.return customerid and cardid
+            Merchant->>+PCIPGW:Call create Customer API (mode=token,token_id,email)
+            PCIPGW->>-Merchant:return customerid and cardid
         end
-        
+        autonumber 1
         rect rgb(255, 220, 220)
-            Merchant->>+PCIPGW:1.Call create Charge API (mode=customer,customer_id,card_id)
-                PCIPGW->>+KPGW:2.request charge
-                KPGW->>+CLK:3.request charge
-                CLK->>-KPGW:4.return payment result
-                KPGW->>-PCIPGW:5.return payment result
-            PCIPGW->>-Merchant:6.return chargeid, transaction_state, transaction_status
+            Merchant->>+PCIPGW:Call create Charge API (mode=customer,customer_id,card_id)
+                PCIPGW->>+KPGW:request charge
+                KPGW->>+CLK:request charge
+                CLK->>-KPGW:return payment result
+                KPGW->>-PCIPGW:return payment result
+            PCIPGW->>-Merchant:return chargeid, transaction_state, transaction_status
         end
 ```
 
 Add card (to-be)
 ```mermaid
     sequenceDiagram
+        autonumber 1
         rect rgb(252, 255, 220)
-            Customer->Merchant:1.confirm to add card on Kbank UI
-            Merchant->>+PCIPGW:2.KbankUI call create Token API (mode=fullpan,card_number,card_exp,cvv)
-            PCIPGW->>-Merchant:3.return token_id
+            && Customer->>Merchant:confirm to add card on Kbank UI
+            Merchant->>+PCIPGW:KbankUI call create Token API (mode=fullpan,card_number,card_exp,cvv)
+            PCIPGW->>-Merchant:return token_id
 
-            Merchant->>+PCIPGW:4.Call create Charge API (mode=register3d,token_id)
-            PCIPGW->>-Merchant:5.return chargeid & redirect_url
+            Merchant->>+PCIPGW:Call create Charge API (mode=register3d,token_id)
+            PCIPGW->>-Merchant:return chargeid & redirect_url
 
-            Merchant->>3DS:6.Redirect to redirect_url
-            3DS->3DS:7.send and verify OTP
-            3DS->PCIPGW:8.return OTP result with ECI,CAVV
+            Merchant->>+PCIPGW:Redirect to redirect_url
+            PCIPGW->>+3DS:Redirect to redirect_url
+            3DS->>3DS:send and verify OTP
+            3DS->>-PCIPGW:return OTP result with ECI,CAVV
             
             Note left of PCIPGW: Check & flag value for isInternalCharge
-            rect rgb(220, 255, 229)
-                Note right of PCIPGW: isInternalCharge=true
-                PCIPGW->>+KPGW:9.request charge,ECI,CAVV (amt 0 for VS,MC)
-                KPGW->>+CLK:10.request charge
-                CLK->>-KPGW:11.return payment result
-                KPGW->>-PCIPGW:12.return payment result
+            alt
+                rect rgb(220, 255, 229)
+                    Note right of PCIPGW: isInternalCharge=true
+                    PCIPGW->>+KPGW:request charge,ECI,CAVV (amt 0 for VS,MC)
+                    KPGW->>+CLK:request charge
+                    CLK->>-KPGW:return payment result
+                    KPGW->>-PCIPGW:return payment result
+                end
+            else
+                rect rgb(220, 251, 255)
+                    Note right of PCIPGW: isInternalCharge=false
+                    PCIPGW->>+CYBS:Request Create CybsTokenID
+                    CYBS->>-PCIPGW:return CybsTokenID
+                    PCIPGW->>+CYBS:Payment with CybsTokenID,ECI,CAVV
+                    CYBS->>-PCIPGW:Return payment result
+                end
             end
-            rect rgb(220, 251, 255)
-                Note right of PCIPGW: isInternalCharge=false
-                PCIPGW->>+CYBS:9.Request Create CybsTokenID
-                CYBS->>-PCIPGW:10.return CybsTokenID
-                PCIPGW->>+CYBS:11.Payment with CybsTokenID,ECI,CAVV
-                CYBS->>-PCIPGW:12.Return payment result
-            end
-            
-            PCIPGW->>Merchant:13.return chargeid & payment result
+            PCIPGW->>-Merchant:return chargeid & payment result
 
-            Merchant->>+PCIPGW:14.Call create Customer API (mode=token,token_id,email)
-            PCIPGW->>-Merchant:15.return customer_id and card_id <br>(which is mapped with CybsTokenID)
+            Merchant->>+PCIPGW:Call create Customer API (mode=token,token_id,email)
+            PCIPGW->>-Merchant:return customer_id and card_id <br>(which is mapped with CybsTokenID)
         end
-        
+        autonumber 1
         rect rgb(255, 220, 220)
-            Merchant->>PCIPGW:1.Call create Charge API (mode=customer,customer_id,card_id)
+            Merchant->>PCIPGW:Call create Charge API (mode=customer,customer_id,card_id)
             Note left of PCIPGW: Check value for isInternalCharge
-            rect rgb(220, 255, 229)
-                Note right of PCIPGW: isInternalCharge=true
-                PCIPGW->>+KPGW:2.request charge
-                KPGW->>+CLK:3.request charge
-                CLK->>-KPGW:4.return payment result
-                KPGW->>-PCIPGW:5.return payment result
+            alt
+                rect rgb(220, 255, 229)
+                    Note right of PCIPGW: isInternalCharge=true
+                    PCIPGW->>+KPGW:request charge
+                    KPGW->>+CLK:request charge
+                    CLK->>-KPGW:return payment result
+                    KPGW->>-PCIPGW:return payment result
+                end
+            else
+                rect rgb(220, 251, 255)
+                    Note right of PCIPGW: isInternalCharge=false
+                    PCIPGW->>+CYBS:Payment with CybsTokenID,ECI,CAVV
+                    CYBS->>-PCIPGW:Return payment result
+                end
             end
-            rect rgb(220, 251, 255)
-                Note right of PCIPGW: isInternalCharge=false
-                PCIPGW->>+CYBS:2.Payment with CybsTokenID,ECI,CAVV
-                CYBS->>-PCIPGW:3.Return payment result
-            end
-            PCIPGW->>Merchant:6.return chargeid, transaction_state, transaction_status
+            PCIPGW->>Merchant:return chargeid, transaction_state, transaction_status
         end
 ```
 
@@ -172,23 +185,23 @@ Add card (to-be)
 Create Customer (as-is)
 ```mermaid
     sequenceDiagram
-        
+        autonumber 1
         rect rgb(252, 255, 220)
-            Merchant->>+PCIPGW:1.Call create customer API (mode=fullpan)
-            PCIPGW->>+KPGW:2.request charge (amt 0 for VS,MC)
-            KPGW->>+CLK:3.request charge 0 THB
-            CLK->>-KPGW:4.return payment result
-            KPGW->>-PCIPGW:5.return payment result
-            PCIPGW->>-Merchant:6.return customer_id and card_id
+            Merchant->>+PCIPGW:Call create customer API (mode=fullpan)
+            PCIPGW->>+KPGW:request charge (amt 0 for VS,MC)
+            KPGW->>+CLK:request charge 0 THB
+            CLK->>-KPGW:return payment result
+            KPGW->>-PCIPGW:return payment result
+            PCIPGW->>-Merchant:return customer_id and card_id
         end
-        
+        autonumber 1
         rect rgb(255, 220, 220)
-            Merchant->>+PCIPGW:1.Call create Charge API (mode=customer,customer_id,card_id)
-            PCIPGW->>+KPGW:2.request charge
-            KPGW->>+CLK:3.request charge
-            CLK->>-KPGW:4.return payment result
-            KPGW->>-PCIPGW:5.return payment result
-            PCIPGW->>-Merchant:6.return charge_id, transaction_state, transaction_status
+            Merchant->>+PCIPGW:Call create Charge API (mode=customer,customer_id,card_id)
+            PCIPGW->>+KPGW:request charge
+            KPGW->>+CLK:request charge
+            CLK->>-KPGW:return payment result
+            KPGW->>-PCIPGW:return payment result
+            PCIPGW->>-Merchant:return charge_id, transaction_state, transaction_status
         end
 ```
 
@@ -196,40 +209,47 @@ Create Customer (as-is)
 Create Customer (to-be)
 ```mermaid
     sequenceDiagram
+        autonumber 1
         rect rgb(252, 255, 220)
-            Merchant->>+PCIPGW:1.Call create Customer API (mode=fullpan)
+            Merchant->>+PCIPGW:Call create Customer API (mode=fullpan)
             Note left of PCIPGW: Check & flag value for isInternalCharge
-            rect rgb(220, 255, 229)
-                Note right of PCIPGW: isInternalCharge=true
-                PCIPGW->>+KPGW:2.request charge (amt 0 for VS,MC)
-                KPGW->>+CLK:3.request charge 0 THB
-                CLK->>-KPGW:4.return payment result
-                KPGW->>-PCIPGW:5.return payment result
+            alt
+                rect rgb(220, 255, 229)
+                    Note right of PCIPGW: isInternalCharge=true
+                    PCIPGW->>+KPGW:request charge (amt 0 for VS,MC)
+                    KPGW->>+CLK:request charge 0 THB
+                    CLK->>-KPGW:return payment result
+                    KPGW->>-PCIPGW:return payment result
+                end
+            else
+                rect rgb(220, 251, 255)
+                    Note right of PCIPGW: isInternalCharge=false
+                    PCIPGW->>+CYBS:Request Create CybsTokenID
+                    CYBS->>-PCIPGW:return CybsTokenID
+                end
             end
-            rect rgb(220, 251, 255)
-                Note right of PCIPGW: isInternalCharge=false
-                PCIPGW->>+CYBS:2.Request Create CybsTokenID
-                CYBS->>-PCIPGW:3.return CybsTokenID
-            end
-            PCIPGW->>-Merchant:6.return customer_id and card_id<br>(which is mapped with CybsTokenID)
+            PCIPGW->>-Merchant:return customer_id and card_id<br>(which is mapped with CybsTokenID)
         end
-        
+        autonumber 1
         rect rgb(255, 220, 220)
-            Merchant->>+PCIPGW:1.Call create Charge API (mode=customer,customer_id,card_id)
+            Merchant->>+PCIPGW:Call create Charge API (mode=customer,customer_id,card_id)
             Note left of PCIPGW: Check value for isInternalCharge
-            rect rgb(220, 255, 229)
-                Note right of PCIPGW: isInternalCharge=true
-                PCIPGW->>+KPGW:2.request charge
-                KPGW->>+CLK:3.request charge
-                CLK->>-KPGW:4.return payment result
-                KPGW->>-PCIPGW:5.return payment result
+            alt
+                rect rgb(220, 255, 229)
+                    Note right of PCIPGW: isInternalCharge=true
+                    PCIPGW->>+KPGW:request charge
+                    KPGW->>+CLK:request charge
+                    CLK->>-KPGW:return payment result
+                    KPGW->>-PCIPGW:return payment result
+                end
+            else
+                rect rgb(220, 251, 255)
+                    Note right of PCIPGW: isInternalCharge=false
+                    PCIPGW->>+CYBS:Payment with CybsTokenID
+                    CYBS->>-PCIPGW:Return payment result
+                end
             end
-            rect rgb(220, 251, 255)
-                Note right of PCIPGW: isInternalCharge=false
-                PCIPGW->>+CYBS:2.Payment with CybsTokenID
-                CYBS->>-PCIPGW:3.Return payment result
-            end
-            PCIPGW->>-Merchant:6.return charge_id, transaction_state, transaction_status
+            PCIPGW->>-Merchant:return charge_id, transaction_state, transaction_status
         end
 ```
 
