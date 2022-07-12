@@ -156,11 +156,11 @@ Capture a Payment (timeout)
 ```
 
 STATUS:
-AUTHORIZED => payment approval
-PENDING => captured/settled
+AUTHORIZED => payment approval,
+PENDING => captured/settled,
 REVERSED => voided/reversed
 
 RequestID:
-payment_request_id
-capture_request_id
+payment_request_id,
+capture_request_id,
 reverse_request_id
