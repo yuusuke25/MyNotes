@@ -11,8 +11,8 @@ To Get CybsTokenID
         rect rgb(220, 251, 255)
             PCIPGW->>+CYBS:Call CreatePaymentInstrumentCard API
             Note right of CYBS: Req: POST /tms/v1/paymentinstruments<br>vcMerchantId,instrumentId,cardType,expirationMonth,expirationYear
-            CYBS->>-PCIPGW:Return paymentId/tokenId
-            Note right of CYBS: Res:paymentId ("id": "E383B9C1D2EF35ECE053AF598E0ADE66")
+            CYBS->>-PCIPGW:Return paymentInstrumentId/tokenId
+            Note right of CYBS: Res:paymentInstrumentId ("id": "E383B9C1D2EF35ECE053AF598E0ADE66")
         end
 ```
 
@@ -40,8 +40,8 @@ To Get CybsTokenID (timeout)
             end
             PCIPGW->>+CYBS: Call CreatePaymentInstrumentCard API
             Note right of CYBS: Req: POST /tms/v1/paymentinstruments<br>USE THE SAME REQUEST PAYLOAD
-            CYBS->>-PCIPGW: Return paymentId/tokenId
-            Note right of CYBS: Res:paymentId ("id": "E383B9C1D2EF35ECE053AF598E0ADE66") the value will be changed
+            CYBS->>-PCIPGW: Return paymentInstrumentId/tokenId
+            Note right of CYBS: Res:paymentInstrumentId ("id": "E383B9C1D2EF35ECE053AF598E0ADE66") the value will be changed
         end
 ```
 
@@ -52,7 +52,7 @@ Process a Payment
     autonumber
         rect rgb(252, 255, 220)
             PCIPGW->>+CYBS:Call AuthorizationWithCustomerTokenId API
-            Note right of CYBS: Req: POST /pts/v2/payments<br>vcMerchantId,tokentId,merchantRef,paymentAmount,currency
+            Note right of CYBS: Req: POST /pts/v2/payments<br>vcMerchantId,paymentInstrumentId,merchantRef,paymentAmount,currency
             CYBS->>-PCIPGW:Return payment result
             Note right of CYBS: Res:paymentId ("responseCode": "00","approvalCode": "831000",<BR>"status": "AUTHORIZED","id": "6575302598316189303954","submitTimeUtc": "2022-07-11T09:04:20Z"(+7))
         end
@@ -64,7 +64,7 @@ Process a Payment (timeout)
     autonumber
         rect rgb(252, 255, 220)
             PCIPGW->>+CYBS:Call AuthorizationWithCustomerTokenId API
-            Note right of CYBS: Req: POST /pts/v2/payments<br>vcMerchantId,tokentId,merchantRef,paymentAmount,currency
+            Note right of CYBS: Req: POST /pts/v2/payments<br>vcMerchantId,paymentInstrumentId,merchantRef,paymentAmount,currency
             rect rgb(255, 220, 220)
               CYBS--XPCIPGW: xxx timeout xxx
             end
