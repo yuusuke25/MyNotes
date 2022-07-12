@@ -1,4 +1,4 @@
-Settlement (cybs)
+Settlement (to-be)
 ```mermaid
     sequenceDiagram        
         alt manual settlement
@@ -23,7 +23,7 @@ Settlement (cybs)
 ```
 
 
-void (cybs)
+void (to-be)
 ```mermaid
     sequenceDiagram
         alt isInternalCharge=true
@@ -45,7 +45,7 @@ void (cybs)
         end
 ```
 
-Refund (cybs)
+Refund (to-be)
 ```mermaid
     sequenceDiagram
         MP_BP->>+PCIPGW_BE:0.Request by Refund Button
