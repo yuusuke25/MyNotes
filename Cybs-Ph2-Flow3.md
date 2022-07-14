@@ -22,7 +22,7 @@ To Get CybsTokenID (timeout)
     autonumber
         rect rgb(252, 255, 220)
             PCIPGW->>+CYBS: Call CreateInstrumentIdentifierCard API
-            Note right of CYBS: Req: POST /tms/v1/instrumentidentifiers<br>vcMerchantId,cardNo,expirationMonth,expirationYear
+            Note right of CYBS: Req: POST /tms/v1/instrumentidentifiers<br>vcMerchantId,cardNo
             rect rgb(255, 220, 220)
               CYBS--XPCIPGW: xxx timeout xxx
             end
