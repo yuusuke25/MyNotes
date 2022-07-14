@@ -153,9 +153,9 @@ Add card (to-be)
             Merchant->>+PCIPGW:Call create Charge API (mode=customer,customer_id,card_id)
               alt
                 rect rgb(220, 251, 255)
-                  Note right of PCIPGW: *Check MID is active in cybs tab (for e-com)
-                  Note right of PCIPGW: **card_brand(Visa,MC,JCB), card_type(credit,debit), onus/offus are matched with BP Config 
-                  Note right of PCIPGW: ***and also found CybsTokenID in the database
+                  Note right of PCIPGW: Check MID is active in cybs tab (for e-com)
+                  Note right of PCIPGW: AND matched with BP Config for card_brand(Visa,MC,JCB), card_type(credit,debit), onus/offus
+                  Note right of PCIPGW: AND also found CybsTokenID in the database (token_cybs.payment_instrument_id)
                     PCIPGW->>+CYBS:Payment with CybsTokenID
                     CYBS->>-PCIPGW:Return payment result
                 end
@@ -221,9 +221,9 @@ Create Customer (to-be)
             Merchant->>+PCIPGW:Call create Charge API (mode=customer,customer_id,card_id)
               alt
                 rect rgb(220, 251, 255)
-                  Note right of PCIPGW: *Check MID is active in cybs tab (for e-com)
-                  Note right of PCIPGW: **card_brand(Visa,MC,JCB), card_type(credit,debit), onus/offus are matched with BP Config 
-                  Note right of PCIPGW: ***and also found CybsTokenID in the database
+                  Note right of PCIPGW: Check MID is active in cybs tab (for e-com)
+                  Note right of PCIPGW: AND matched with BP Config for card_brand(Visa,MC,JCB), card_type(credit,debit), onus/offus
+                  Note right of PCIPGW: AND also found CybsTokenID in the database (token_cybs.payment_instrument_id)
                     PCIPGW->>+CYBS:Payment with CybsTokenID
                     CYBS->>-PCIPGW:Return payment result
                 end
