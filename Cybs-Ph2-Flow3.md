@@ -1,4 +1,4 @@
-To Get CybsTokenID
+To Get CybsTokenID (New DB Table token_cybs.payment_instrument_id)
 ```mermaid
     sequenceDiagram
     autonumber
