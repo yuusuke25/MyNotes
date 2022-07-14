@@ -76,6 +76,7 @@ Refund (to-be)
             CLK->>-KPGW:Return Refund result
         end
         rect rgb(220, 251, 255)
+            autonumber 1
             Note over PCIPGW_BE,KPGW: KPGW upload refund report on next day 5:00am
             KPGW->>+PCIPGW_BE:Request upload report file
             PCIPGW_BE->>-KPGW:Response confirm received the report file
