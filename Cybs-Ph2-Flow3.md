@@ -4,7 +4,7 @@ To Get CybsTokenID (New DB Table token_cybs.payment_instrument_id)
     autonumber
         rect rgb(252, 255, 220)
             PCIPGW->>+CYBS:Call CreateInstrumentIdentifierCard API
-            Note right of CYBS: Req: POST /tms/v1/instrumentidentifiers<br>vcMerchantId,cardNo,expirationMonth,expirationYear
+            Note right of CYBS: Req: POST /tms/v1/instrumentidentifiers<br>vcMerchantId,cardNo
             CYBS->>-PCIPGW:Return instrumentid
             Note right of CYBS: Res:instrumentId ("id": "7030000000150931111")
         end
