@@ -1,23 +1,37 @@
 Settlement (to-be)
 ```mermaid
-    sequenceDiagram        
+    sequenceDiagram  
+        autonumber 1
         alt manual settlement
-         rect rgb(220, 251, 255)
-          Merchant->>+PCIPGW:3.Request settlement
-          loop txn by txn
-            PCIPGW->>+CYBS:4.Capture a payment
-            CYBS->>-PCIPGW:5.Return Capture result
+         rect rgb(255, 220, 220)
+          Merchant->>+PCIPGW:Request settlement
+          Note right of PCIPGW: Check validation
+          %% loop txn by txn
+          alt charge_cybs_infor.id is not null
+            Note right of PCIPGW: Check charge_cybs_info.status = 'AUTHORIZED'
+            rect rgb(220, 251, 255)
+                PCIPGW->>+CYBS:Capture a payment
+                CYBS->>-PCIPGW:Return Capture result
+            end
+          else charge_cybs_infor.id is null
+            rect rgb(220, 255, 229)
+                PCIPGW->>+KPGW:Settlement API (/settle)
+                KPGW->>-PCIPGW:Return settlement result
+            end
           end
-          PCIPGW->>-Merchant:6.Return settlement result
+          %% end
+          PCIPGW->>-Merchant:Return settlement result
          end
         else auto settlement
-         rect rgb(220, 255, 229)
-          Batch->>+PCIPGW:3.start settlement at xx:xx pm
+         rect rgb(252, 255, 220)
+         autonumber 1
+          Batch->>+PCIPGW:start settlement at xx:xx pm
+          Note right of PCIPGW: Get all charge_cybs_info.status = 'AUTHORIZED'
           loop txn by txn
-            PCIPGW->>+CYBS:4.Capture a payment
-            CYBS->>-PCIPGW:5.Return Capture result
+            PCIPGW->>+CYBS:Capture a payment
+            CYBS->>-PCIPGW:Return Capture result
           end
-          PCIPGW->>-Batch:6.Return Settlement result
+          PCIPGW->>-Batch:Return Settlement result
          end
         end
 ```
@@ -26,36 +40,44 @@ Settlement (to-be)
 void (to-be)
 ```mermaid
     sequenceDiagram
-        alt isInternalCharge=true
+        MP_BP->>+PCIPGW_BE:Request by Void Button
+        alt charge_cybs_infor.id is not null
             rect rgb(220, 251, 255)
-                MP_BP->>+PCIPGW_BE:0.Request by Void Button
-                PCIPGW_BE->>+KPGW:1.Void a payment
-                KPGW->>+CLK:2.Request void
-                CLK->>-KPGW:3.Return void result
-                KPGW->>-PCIPGW_BE:4.Return void result
-                PCIPGW_BE->>-MP_BP:5.Display result
+                Note right of PCIPGW: Get all charge_cybs_info.status = 'AUTHORIZED'
+                autonumber 1
+                PCIPGW_BE->>+CYBS:Void a payment
+                CYBS->>-PCIPGW_BE:Return void result
             end
-        else isInternalCharge=false
+        else charge_cybs_infor.id is null
             rect rgb(220, 255, 229)
-                MP_BP->>+PCIPGW_BE:0.Request by Void Button
-                PCIPGW_BE->>+CYBS:1.Void a payment
-                CYBS->>-PCIPGW_BE:2.Return void result
-                PCIPGW_BE->>-MP_BP:3.Display result
+                autonumber 1
+                PCIPGW_BE->>+KPGW:Void a payment
+                KPGW->>+CLK:Request void
+                CLK->>-KPGW:Return void result
+                KPGW->>-PCIPGW_BE:Return void result
             end
         end
+        PCIPGW_BE->>-MP_BP:Display result
 ```
 
 Refund (to-be)
 ```mermaid
     sequenceDiagram
-        MP_BP->>+PCIPGW_BE:0.Request by Refund Button
-        PCIPGW_BE->>+KPGW:1.Refund a settled transaction
-        KPGW->>-PCIPGW_BE:2.Return Refund result
-        PCIPGW_BE->>-MP_BP:3.Display result
+        autonumber 1
+        MP_BP->>+PCIPGW_BE:Request by Refund Button
+        PCIPGW_BE->>+KPGW:Refund a settled transaction
+        KPGW->>-PCIPGW_BE:Return Refund result
+        PCIPGW_BE->>-MP_BP:Display result
         
         rect rgb(220, 251, 255)
+            autonumber 1
             Note over KPGW,CLK: KPGW batch job to process refund at xx:xx pm
-            KPGW->>+CLK:3.Request Refund
-            CLK->>-KPGW:4.Return Refund result
+            KPGW->>+CLK:Request Refund for all transactions
+            CLK->>-KPGW:Return Refund result
+        end
+        rect rgb(220, 251, 255)
+            Note over PCIPGW_BE,KPGW: KPGW upload refund report on next day 5:00am
+            KPGW->>+PCIPGW_BE:Request upload report file
+            PCIPGW_BE->>-KPGW:Response confirm received the report file
         end
 ```
