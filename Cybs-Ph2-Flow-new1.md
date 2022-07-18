@@ -340,7 +340,7 @@ API - Create Charge (Charge Process)
             Merchant->>PCIPGW:Call create Charge API (mode=token,tokenid)
             Note right of PCIPGW: ***Check if the saved card & profile have condition as below
             
-            rect rgb(255, 220, 220)
+            rect rgb(220, 251, 255)
             autonumber 2
                 Note right of PCIPGW: Check MID have comp config to active cybs (for e-com)
                 Note right of PCIPGW: AND matched with BP Config for card_brand(Visa,MC,JCB), card_type(credit,debit), onus/offus
