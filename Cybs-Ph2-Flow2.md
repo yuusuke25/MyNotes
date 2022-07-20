@@ -43,7 +43,7 @@ void (to-be)
         MP_BP->>+PCIPGW_BE:Request by Void Button
         alt charge_cybs_infor.id is not null
             rect rgb(220, 251, 255)
-                Note right of PCIPGW: Get all charge_cybs_info.status = 'AUTHORIZED'
+                Note right of PCIPGW_BE: Get all charge_cybs_info.status = 'AUTHORIZED'
                 autonumber 1
                 PCIPGW_BE->>+CYBS:Void a payment
                 CYBS->>-PCIPGW_BE:Return void result
