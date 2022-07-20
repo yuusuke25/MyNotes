@@ -61,8 +61,9 @@ Pay and save with Embedded (to-be)
         autonumber 1
         rect rgb(252, 255, 220)
             Merchant->>+PCIPGW:Call create Customer API (mode=token,tokenid,email) to save card with KPGW
-              Note left of PCIPGW: Check MID have comp config to active cybs (for e-com)
               rect rgb(220, 251, 255)
+                  Note right of PCIPGW: Check Company Config - Active Cybs Token (for e-com)
+                  Note right of PCIPGW: AND matched with Company Config for card_brand(Visa,MC,JCB), card_type(credit,debit), onus/offus
                   PCIPGW->>+CYBS:Request Create CybsTokenID
                   CYBS->>-PCIPGW:return CybsTokenID
                   Note right of PCIPGW: save CybsTokenID into new table and FK from table charge trx_id(pm)
@@ -140,8 +141,10 @@ Add card (to-be)
             PCIPGW->>-Merchant:return chargeid & payment result
 
             Merchant->>+PCIPGW:Call create Customer API (mode=token,token_id,email)
-              Note left of PCIPGW: Check MID have comp config to active cybs (for e-com)
+              
               rect rgb(220, 251, 255)
+                  Note right of PCIPGW: Check Company Config - Active Cybs Token (for e-com)
+                  Note right of PCIPGW: AND matched with Company Config for card_brand(Visa,MC,JCB), card_type(credit,debit), onus/offus
                   PCIPGW->>+CYBS:Request Create CybsTokenID
                   CYBS->>-PCIPGW:return CybsTokenID
                   Note right of PCIPGW: save CybsTokenID into new table and FK from table charge trx_id(pm)
@@ -153,8 +156,8 @@ Add card (to-be)
             Merchant->>+PCIPGW:Call create Charge API (mode=customer,customer_id,card_id)
               alt
                 rect rgb(220, 251, 255)
-                  Note right of PCIPGW: Check MID have comp config to active cybs (for e-com)
-                  Note right of PCIPGW: AND matched with BP Config for card_brand(Visa,MC,JCB), card_type(credit,debit), onus/offus
+                  Note right of PCIPGW: Check Company Config - Active Cybs Token (for e-com)
+                  Note right of PCIPGW: AND matched with Company Config for card_brand(Visa,MC,JCB), card_type(credit,debit), onus/offus
                   Note right of PCIPGW: AND also found CybsTokenID in the database (token_cybs.payment_instrument_id)
                     PCIPGW->>+CYBS:Payment with CybsTokenID
                     CYBS->>-PCIPGW:Return payment result
@@ -208,8 +211,9 @@ Create Customer (to-be)
             KPGW->>+CLK:request charge 0 THB
             CLK->>-KPGW:return payment result
             KPGW->>-PCIPGW:return payment result
-            Note left of PCIPGW: Check MID have comp config to active cybs (for e-com)
             rect rgb(220, 251, 255)
+              Note right of PCIPGW: Check Company Config - Active Cybs Token (for e-com)
+              Note right of PCIPGW: AND matched with Company Config for card_brand(Visa,MC,JCB), card_type(credit,debit), onus/offus
               PCIPGW->>+CYBS:Request Create CybsTokenID
               CYBS->>-PCIPGW:return CybsTokenID
               Note right of PCIPGW: save CybsTokenID into new table and FK from table charge trx_id(pm)
@@ -221,8 +225,8 @@ Create Customer (to-be)
             Merchant->>+PCIPGW:Call create Charge API (mode=customer,customer_id,card_id)
               alt
                 rect rgb(220, 251, 255)
-                  Note right of PCIPGW: Check MID have comp config to active cybs (for e-com)
-                  Note right of PCIPGW: AND matched with BP Config for card_brand(Visa,MC,JCB), card_type(credit,debit), onus/offus
+                  Note right of PCIPGW: Check Company Config - Active Cybs Token (for e-com)
+                  Note right of PCIPGW: AND matched with Company Config for card_brand(Visa,MC,JCB), card_type(credit,debit), onus/offus
                   Note right of PCIPGW: AND also found CybsTokenID in the database (token_cybs.payment_instrument_id)
                     PCIPGW->>+CYBS:Payment with CybsTokenID
                     CYBS->>-PCIPGW:Return payment result
@@ -264,8 +268,9 @@ API - Create Customer (Register Card)
             KPGW->>+CLK:request charge 0 THB
             CLK->>-KPGW:return payment result
             KPGW->>-PCIPGW:return payment result
-            Note left of PCIPGW: Check MID have comp config to active cybs (for e-com)
             rect rgb(220, 251, 255)
+              Note right of PCIPGW: Check Company Config - Active Cybs Token (for e-com)
+              Note right of PCIPGW: AND matched with Company Config for card_brand(Visa,MC,JCB), card_type(credit,debit), onus/offus
               PCIPGW->>+CYBS:Request Create CybsTokenID
               CYBS->>-PCIPGW:return CybsTokenID
               Note right of PCIPGW: save CybsTokenID into new table and FK from table charge trx_id(pm)
@@ -277,8 +282,9 @@ API - Create Customer (Register Card)
         rect rgb(255, 220, 220)
         Note over Merchant,PCIPGW: Customer API mode=token, check the tokenid is already got charge approval
             Merchant->>+PCIPGW:Call create Customer API (mode=token,token_id,email)
-            Note left of PCIPGW: Check MID have comp config to active cybs (for e-com)
               rect rgb(220, 251, 255)
+                  Note right of PCIPGW: Check Company Config - Active Cybs Token (for e-com)
+                  Note right of PCIPGW: AND matched with Company Config for card_brand(Visa,MC,JCB), card_type(credit,debit), onus/offus
                   PCIPGW->>+CYBS:Request Create CybsTokenID
                   CYBS->>-PCIPGW:return CybsTokenID
                   Note right of PCIPGW: save CybsTokenID into new table and FK from table charge trx_id(pm)
@@ -296,8 +302,8 @@ API - Create Charge (Charge Process)
             Merchant->>+PCIPGW:Call create Charge API (mode=customer,customer_id,card_id)
             alt
               rect rgb(220, 251, 255)
-                Note right of PCIPGW: Check MID have comp config to active cybs (for e-com)
-                Note right of PCIPGW: AND matched with BP Config for card_brand(Visa,MC,JCB), card_type(credit,debit), onus/offus
+                Note right of PCIPGW: Check Company Config - Active Cybs Token (for e-com)
+                Note right of PCIPGW: AND matched with Company Config for card_brand(Visa,MC,JCB), card_type(credit,debit), onus/offus
                 Note right of PCIPGW: AND also found CybsTokenID in the database (token_cybs.payment_instrument_id)
                   PCIPGW->>+CYBS:Payment with CybsTokenID
                   CYBS->>-PCIPGW:Return payment result
@@ -342,8 +348,8 @@ API - Create Charge (Charge Process)
             
             rect rgb(220, 251, 255)
             autonumber 2
-                Note right of PCIPGW: Check MID have comp config to active cybs (for e-com)
-                Note right of PCIPGW: AND matched with BP Config for card_brand(Visa,MC,JCB), card_type(credit,debit), onus/offus
+                Note right of PCIPGW: Check Company Config - Active Cybs Token (for e-com)
+                Note right of PCIPGW: AND matched with Company Config for card_brand(Visa,MC,JCB), card_type(credit,debit), onus/offus
                 Note right of PCIPGW: AND also found CybsTokenID in the database (token_cybs.payment_instrument_id)
                 
                 PCIPGW->>Merchant:return chargeid & redirect_url (for cybs 3ds)
