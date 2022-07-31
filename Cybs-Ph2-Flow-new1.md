@@ -62,8 +62,7 @@ Pay and save with Embedded (to-be)
         rect rgb(252, 255, 220)
             Merchant->>+PCIPGW:Call create Customer API (mode=token,tokenid,email) to save card with KPGW
               rect rgb(220, 251, 255)
-                  Note right of PCIPGW: Check Company Config - Active Cybs Token (for e-com)
-                  Note right of PCIPGW: AND matched with Company Config for card_brand(Visa,MC,JCB), card_type(credit,debit), onus/offus
+                  Note right of PCIPGW: Check Company Config - Cybersource Authorization is Enabled
                   PCIPGW->>+CYBS:Request Create CybsTokenID
                   CYBS->>-PCIPGW:return CybsTokenID
                   Note right of PCIPGW: save CybsTokenID into new table and FK from table charge trx_id(pm)
@@ -143,8 +142,7 @@ Add card (to-be)
             Merchant->>+PCIPGW:Call create Customer API (mode=token,token_id,email)
               
               rect rgb(220, 251, 255)
-                  Note right of PCIPGW: Check Company Config - Active Cybs Token (for e-com)
-                  Note right of PCIPGW: AND matched with Company Config for card_brand(Visa,MC,JCB), card_type(credit,debit), onus/offus
+                  Note right of PCIPGW: Check Company Config - Cybersource Authorization is Enabled
                   PCIPGW->>+CYBS:Request Create CybsTokenID
                   CYBS->>-PCIPGW:return CybsTokenID
                   Note right of PCIPGW: save CybsTokenID into new table and FK from table charge trx_id(pm)
@@ -156,7 +154,7 @@ Add card (to-be)
             Merchant->>+PCIPGW:Call create Charge API (mode=customer,customer_id,card_id)
               alt
                 rect rgb(220, 251, 255)
-                  Note right of PCIPGW: Check Company Config - Active Cybs Token (for e-com)
+                  Note right of PCIPGW: Check Company Config - Cybersource Authorization is Enabled
                   Note right of PCIPGW: AND matched with Company Config for card_brand(Visa,MC,JCB), card_type(credit,debit), onus/offus
                   Note right of PCIPGW: AND also found CybsTokenID in the database (token_cybs.payment_instrument_id)
                     PCIPGW->>+CYBS:Payment with CybsTokenID
@@ -212,8 +210,7 @@ Create Customer (to-be)
             CLK->>-KPGW:return payment result
             KPGW->>-PCIPGW:return payment result
             rect rgb(220, 251, 255)
-              Note right of PCIPGW: Check Company Config - Active Cybs Token (for e-com)
-              Note right of PCIPGW: AND matched with Company Config for card_brand(Visa,MC,JCB), card_type(credit,debit), onus/offus
+              Note right of PCIPGW: Check Company Config - Cybersource Authorization is Enabled
               PCIPGW->>+CYBS:Request Create CybsTokenID
               CYBS->>-PCIPGW:return CybsTokenID
               Note right of PCIPGW: save CybsTokenID into new table and FK from table charge trx_id(pm)
@@ -225,7 +222,7 @@ Create Customer (to-be)
             Merchant->>+PCIPGW:Call create Charge API (mode=customer,customer_id,card_id)
               alt
                 rect rgb(220, 251, 255)
-                  Note right of PCIPGW: Check Company Config - Active Cybs Token (for e-com)
+                  Note right of PCIPGW: Check Company Config - Cybersource Authorization is Enabled
                   Note right of PCIPGW: AND matched with Company Config for card_brand(Visa,MC,JCB), card_type(credit,debit), onus/offus
                   Note right of PCIPGW: AND also found CybsTokenID in the database (token_cybs.payment_instrument_id)
                     PCIPGW->>+CYBS:Payment with CybsTokenID
@@ -269,8 +266,7 @@ API - Create Customer (Register Card)
             CLK->>-KPGW:return payment result
             KPGW->>-PCIPGW:return payment result
             rect rgb(220, 251, 255)
-              Note right of PCIPGW: Check Company Config - Active Cybs Token (for e-com)
-              Note right of PCIPGW: AND matched with Company Config for card_brand(Visa,MC,JCB), card_type(credit,debit), onus/offus
+              Note right of PCIPGW: Check Company Config - Cybersource Authorization is Enabled
               PCIPGW->>+CYBS:Request Create CybsTokenID
               CYBS->>-PCIPGW:return CybsTokenID
               Note right of PCIPGW: save CybsTokenID into new table and FK from table charge trx_id(pm)
@@ -283,8 +279,7 @@ API - Create Customer (Register Card)
         Note over Merchant,PCIPGW: Customer API mode=token, check the tokenid is already got charge approval
             Merchant->>+PCIPGW:Call create Customer API (mode=token,token_id,email)
               rect rgb(220, 251, 255)
-                  Note right of PCIPGW: Check Company Config - Active Cybs Token (for e-com)
-                  Note right of PCIPGW: AND matched with Company Config for card_brand(Visa,MC,JCB), card_type(credit,debit), onus/offus
+                  Note right of PCIPGW: Check Company Config - Cybersource Authorization is Enabled
                   PCIPGW->>+CYBS:Request Create CybsTokenID
                   CYBS->>-PCIPGW:return CybsTokenID
                   Note right of PCIPGW: save CybsTokenID into new table and FK from table charge trx_id(pm)
@@ -302,7 +297,7 @@ API - Create Charge (Charge Process)
             Merchant->>+PCIPGW:Call create Charge API (mode=customer,customer_id,card_id)
             alt
               rect rgb(220, 251, 255)
-                Note right of PCIPGW: Check Company Config - Active Cybs Token (for e-com)
+                Note right of PCIPGW: Check Company Config - Cybersource Authorization is Enabled
                 Note right of PCIPGW: AND matched with Company Config for card_brand(Visa,MC,JCB), card_type(credit,debit), onus/offus
                 Note right of PCIPGW: AND also found CybsTokenID in the database (token_cybs.payment_instrument_id)
                   PCIPGW->>+CYBS:Payment with CybsTokenID
@@ -348,7 +343,7 @@ API - Create Charge (Charge Process)
             
             rect rgb(220, 251, 255)
             autonumber 2
-                Note right of PCIPGW: Check Company Config - Active Cybs Token (for e-com)
+                Note right of PCIPGW: Check Company Config - Cybersource Authorization is Enabled
                 Note right of PCIPGW: AND matched with Company Config for card_brand(Visa,MC,JCB), card_type(credit,debit), onus/offus
                 Note right of PCIPGW: AND also found CybsTokenID in the database (token_cybs.payment_instrument_id)
                 
