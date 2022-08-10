@@ -345,34 +345,26 @@ API - Create Charge (Charge Process NON-3DS)
             Note over Merchant,PCIPGW: Charge API mode=token, usually request from embedded
             Merchant->>PCIPGW:Call create Charge API (mode=token,tokenid)
             Note right of PCIPGW: ***Check if the saved card & profile have condition as below
-            
-            rect rgb(220, 251, 255)
-            autonumber 2
-                Note right of PCIPGW: Check Company Config - Cybersource Authorization is Enabled
-                Note right of PCIPGW: AND matched with Company Config for card_brand(Visa,MC), card_type(onus/offus)
-                Note right of PCIPGW: AND also found CybsTokenID in the database (token_cybs.payment_instrument_id)
-                                
-                PCIPGW->>+CYBS:Payment with CybsTokenID
-                CYBS->>-PCIPGW:Return payment result
-            end
-            
-            rect rgb(220, 255, 229)
-            autonumber 2
-                Note right of PCIPGW: does not meet the conditions
-                
-                PCIPGW->>Merchant:return chargeid & redirect_url (for kbank 3ds)
-                
-                Merchant->>PCIPGW:Redirect to redirect_url
-                PCIPGW->>+3DS:Redirect to redirect_url
-                3DS->>3DS:send and verify OTP
-                3DS->>-PCIPGW:return OTP result with ECI,CAVV
-                
-                PCIPGW->>+KPGW:request charge,ECI,CAVV
-                KPGW->>+CLK:request charge
-                CLK->>-KPGW:return payment result
-                KPGW->>-PCIPGW:return payment result
-            end
+            alt
+                rect rgb(220, 251, 255)
+                    autonumber 2
+                    Note right of PCIPGW: Check Company Config - Cybersource Authorization is Enabled
+                    Note right of PCIPGW: AND matched with Company Config for card_brand(Visa,MC), card_type(onus/offus)
+                    Note right of PCIPGW: AND also found CybsTokenID in the database (token_cybs.payment_instrument_id)
 
+                    PCIPGW->>+CYBS:Payment with CybsTokenID
+                    CYBS->>-PCIPGW:Return payment result
+                end
+            else
+                rect rgb(220, 255, 229)
+                    autonumber 2
+                    Note right of PCIPGW: does not meet the conditions
+                    PCIPGW->>+KPGW:request charge
+                    KPGW->>+CLK:request charge
+                    CLK->>-KPGW:return payment result
+                    KPGW->>-PCIPGW:return payment result
+                end
+            end
             PCIPGW->>Merchant:return chargeid & payment result
         end
 ```
@@ -385,21 +377,39 @@ API - Create Charge (Charge Process 3DS)
             Note over Merchant,PCIPGW: Charge API mode=customer, already called customer API to get approval and customerid,cardid
             Merchant->>+PCIPGW:Call create Charge API (mode=customer,customer_id,card_id)
             alt
-              rect rgb(220, 251, 255)
-                Note right of PCIPGW: Check Company Config - Cybersource Authorization is Enabled
-                Note right of PCIPGW: AND matched with Company Config for card_brand(Visa,MC), card_type(onus/offus)
-                Note right of PCIPGW: AND also found CybsTokenID in the database (token_cybs.payment_instrument_id)
-                  PCIPGW->>+CYBS:Payment with CybsTokenID
-                  CYBS->>-PCIPGW:Return payment result
-              end
+                rect rgb(220, 251, 255)
+                autonumber 2
+                    Note right of PCIPGW: Check Company Config - Cybersource Authorization is Enabled
+                    Note right of PCIPGW: AND matched with Company Config for card_brand(Visa,MC), card_type(onus/offus)
+                    Note right of PCIPGW: AND also found CybsTokenID in the database (token_cybs.payment_instrument_id)
+
+                    PCIPGW->>Merchant:return chargeid & redirect_url (for cybs 3ds)
+
+                    Merchant->>PCIPGW:Redirect to redirect_url
+
+                    PCIPGW->>+3DS_CYBS:Redirect to redirect_url
+                    3DS_CYBS->>3DS_CYBS:send and verify OTP
+                    3DS_CYBS->>+CYBS:Process a payment
+                    CYBS->>-3DS_CYBS:return payment result
+                    3DS_CYBS->>-PCIPGW:return payment result  
+                end
             else
-              rect rgb(220, 255, 229)
-                Note right of PCIPGW: does not meet the conditions
-                  PCIPGW->>+KPGW:request charge
-                  KPGW->>+CLK:request charge
-                  CLK->>-KPGW:return payment result
-                  KPGW->>-PCIPGW:return payment result
-              end
+                rect rgb(220, 255, 229)
+                autonumber 2
+                    Note right of PCIPGW: does not meet the conditions
+
+                    PCIPGW->>Merchant:return chargeid & redirect_url (for kbank 3ds)
+
+                    Merchant->>PCIPGW:Redirect to redirect_url
+                    PCIPGW->>+3DS:Redirect to redirect_url
+                    3DS->>3DS:send and verify OTP
+                    3DS->>-PCIPGW:return OTP result with ECI,CAVV
+
+                    PCIPGW->>+KPGW:request charge,ECI,CAVV
+                    KPGW->>+CLK:request charge
+                    CLK->>-KPGW:return payment result
+                    KPGW->>-PCIPGW:return payment result
+                end
             end
             PCIPGW->>-Merchant:return chargeid, transaction_state, transaction_status
         end
@@ -429,41 +439,41 @@ API - Create Charge (Charge Process 3DS)
             Note over Merchant,PCIPGW: Charge API mode=token, usually request from embedded
             Merchant->>PCIPGW:Call create Charge API (mode=token,tokenid)
             Note right of PCIPGW: ***Check if the saved card & profile have condition as below
-            
-            rect rgb(220, 251, 255)
-            autonumber 2
-                Note right of PCIPGW: Check Company Config - Cybersource Authorization is Enabled
-                Note right of PCIPGW: AND matched with Company Config for card_brand(Visa,MC), card_type(onus/offus)
-                Note right of PCIPGW: AND also found CybsTokenID in the database (token_cybs.payment_instrument_id)
-                
-                PCIPGW->>Merchant:return chargeid & redirect_url (for cybs 3ds)
-                
-                Merchant->>PCIPGW:Redirect to redirect_url
-                
-                PCIPGW->>+3DS_CYBS:Redirect to redirect_url
-                3DS_CYBS->>3DS_CYBS:send and verify OTP
-                3DS_CYBS->>+CYBS:Process a payment
-                CYBS->>-3DS_CYBS:return payment result
-                3DS_CYBS->>-PCIPGW:return payment result  
-            end
-            
-            rect rgb(220, 255, 229)
-            autonumber 2
-                Note right of PCIPGW: does not meet the conditions
-                
-                PCIPGW->>Merchant:return chargeid & redirect_url (for kbank 3ds)
-                
-                Merchant->>PCIPGW:Redirect to redirect_url
-                PCIPGW->>+3DS:Redirect to redirect_url
-                3DS->>3DS:send and verify OTP
-                3DS->>-PCIPGW:return OTP result with ECI,CAVV
-                
-                PCIPGW->>+KPGW:request charge,ECI,CAVV
-                KPGW->>+CLK:request charge
-                CLK->>-KPGW:return payment result
-                KPGW->>-PCIPGW:return payment result
-            end
+            alt
+                rect rgb(220, 251, 255)
+                autonumber 2
+                    Note right of PCIPGW: Check Company Config - Cybersource Authorization is Enabled
+                    Note right of PCIPGW: AND matched with Company Config for card_brand(Visa,MC), card_type(onus/offus)
+                    Note right of PCIPGW: AND also found CybsTokenID in the database (token_cybs.payment_instrument_id)
 
+                    PCIPGW->>Merchant:return chargeid & redirect_url (for cybs 3ds)
+
+                    Merchant->>PCIPGW:Redirect to redirect_url
+
+                    PCIPGW->>+3DS_CYBS:Redirect to redirect_url
+                    3DS_CYBS->>3DS_CYBS:send and verify OTP
+                    3DS_CYBS->>+CYBS:Process a payment
+                    CYBS->>-3DS_CYBS:return payment result
+                    3DS_CYBS->>-PCIPGW:return payment result  
+                end
+            else
+                rect rgb(220, 255, 229)
+                autonumber 2
+                    Note right of PCIPGW: does not meet the conditions
+
+                    PCIPGW->>Merchant:return chargeid & redirect_url (for kbank 3ds)
+
+                    Merchant->>PCIPGW:Redirect to redirect_url
+                    PCIPGW->>+3DS:Redirect to redirect_url
+                    3DS->>3DS:send and verify OTP
+                    3DS->>-PCIPGW:return OTP result with ECI,CAVV
+
+                    PCIPGW->>+KPGW:request charge,ECI,CAVV
+                    KPGW->>+CLK:request charge
+                    CLK->>-KPGW:return payment result
+                    KPGW->>-PCIPGW:return payment result
+                end
+            end
             PCIPGW->>Merchant:return chargeid & payment result
         end
 ```
