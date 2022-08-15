@@ -88,6 +88,36 @@ Process a Payment (timeout)
         end
 ```
 
+Process a Payment (3DS)
+```mermaid
+    sequenceDiagram
+    autonumber
+        rect rgb(252, 255, 220)
+            PCIPGW->>+CYBS:Call SetupCompletionWithTMSToken API
+            Note right of CYBS: Req: POST /risk/v1/authentication-setups<br>vcMerchantId,merchantRef,expirationMonth,expirationYear,customerId
+            CYBS->>-PCIPGW:Return PA Setup result
+            Note right of CYBS: Res: accessToken,referenceId,status,id
+            
+            PCIPGW->>PCIPGW: Front-End to Submit the Device Data Collection Iframe
+            
+            PCIPGW->>+CYBS:Call EnrollWithPendingAuthentication API
+            Note right of CYBS: Req: POST /risk/v1/authentications<br>vcMerchantId,merchantRef,expirationMonth,expirationYear,customerId,<br>totalAmount,currency,authenticationTransactionId
+            CYBS->>-PCIPGW:Return Enroll result
+            Note right of CYBS: Res: challengeRequired,authenticationTransactionId,accessToken,pareq,directoryServerTransactionId,<br>threeDSServerTransactionId,specificationVersion,acsTransactionId,status,id
+            
+            PCIPGW->>PCIPGW: Front-End to Step-Up Iframe
+            
+            PCIPGW->>+CYBS:Call ValidateAuthenticationResults API
+            Note right of CYBS: Req: POST /risk/v1/authentication-results<br>vcMerchantId,merchantRef,expirationMonth,expirationYear,customerId,<br>totalAmount,currency,referenceId,returnUrl
+            CYBS->>-PCIPGW:Return VA result
+            Note right of CYBS: Res: indicator,authenticationResult,authenticationStatusMsg,cavv,xid,<br>directoryServerTransactionId,threeDSServerTransactionId,specificationVersion,acsTransactionId,status,id
+            
+            PCIPGW->>+CYBS:Call AuthorizationWithPayerAuthValidation API
+            Note right of CYBS: Req: POST /pts/v2/payments<br>vcMerchantId,paymentInstrumentId,merchantRef,transactionId,totalAmount,<br>currency,authenticationTransactionId
+            CYBS->>-PCIPGW:Return payment result
+            Note right of CYBS: Res:paymentId ("responseCode": "00","approvalCode": "831000",<BR>"status": "AUTHORIZED","id": "6575302598316189303954", & 3DS details)
+        end
+```
 
 Void a Payment
 ```mermaid
