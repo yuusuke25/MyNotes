@@ -105,7 +105,7 @@ Process a Payment (3DS)
             CYBS->>-PCIPGW:Return Enroll result
             Note right of CYBS: Res: challengeRequired,authenticationTransactionId,accessToken,pareq,directoryServerTransactionId,<br>threeDSServerTransactionId,specificationVersion,acsTransactionId,status,id
             
-            PCIPGW->>PCIPGW: Front-End to Step-Up Iframe
+            PCIPGW->>PCIPGW: Front-End to submit the Step-Up Iframe
             
             PCIPGW->>+CYBS:Call ValidateAuthenticationResults API
             Note right of CYBS: Req: POST /risk/v1/authentication-results<br>vcMerchantId,merchantRef,expirationMonth,expirationYear,customerId,<br>totalAmount,currency,referenceId,returnUrl
