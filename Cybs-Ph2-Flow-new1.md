@@ -389,9 +389,9 @@ API - Create Charge (Charge Process 3DS)
 
                     PCIPGW->>+3DS_CYBS:Redirect to redirect_url
                     3DS_CYBS->>3DS_CYBS:send and verify OTP
-                    3DS_CYBS->>+CYBS:Process a payment
-                    CYBS->>-3DS_CYBS:return payment result
-                    3DS_CYBS->>-PCIPGW:return payment result  
+                    3DS_CYBS->>-PCIPGW:return VA result
+                    PCIPGW->>+CYBS:Process a payment
+                    CYBS->>-PCIPGW:return payment result
                 end
             else
                 rect rgb(220, 255, 229)
@@ -452,9 +452,9 @@ API - Create Charge (Charge Process 3DS)
 
                     PCIPGW->>+3DS_CYBS:Redirect to redirect_url
                     3DS_CYBS->>3DS_CYBS:send and verify OTP
-                    3DS_CYBS->>+CYBS:Process a payment
-                    CYBS->>-3DS_CYBS:return payment result
-                    3DS_CYBS->>-PCIPGW:return payment result  
+                    3DS_CYBS->>-PCIPGW:return VA result
+                    PCIPGW->>+CYBS:Process a payment
+                    CYBS->>-PCIPGW:return payment result 
                 end
             else
                 rect rgb(220, 255, 229)
