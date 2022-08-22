@@ -101,7 +101,7 @@ Process a Payment 3DS
             PCIPGW->>PCIPGW: Front-End to Submit the Device Data Collection Iframe
             
             PCIPGW->>+CYBS:Call EnrollWithPendingAuthentication API
-            Note right of CYBS: Req: POST /risk/v1/authentications<br>vcMerchantId,merchantRef,expirationMonth,expirationYear,customerId,<br>totalAmount,currency,authenticationTransactionId
+            Note right of CYBS: Req: POST /risk/v1/authentications<br>vcMerchantId,merchantRef,expirationMonth,expirationYear,customerId,<br>totalAmount,currency,referenceId,returnUrl
             CYBS->>-PCIPGW:Return Enroll result
             Note right of CYBS: Res: challengeRequired,authenticationTransactionId,accessToken,pareq,directoryServerTransactionId,<br>threeDSServerTransactionId,specificationVersion,acsTransactionId,status,id
             
@@ -114,7 +114,7 @@ Process a Payment 3DS
             PCIPGW->>PCIPGW: Customer to confirm OTP
             
             PCIPGW->>+CYBS:Call ValidateAuthenticationResults API
-            Note right of CYBS: Req: POST /risk/v1/authentication-results<br>vcMerchantId,merchantRef,expirationMonth,expirationYear,customerId,<br>totalAmount,currency,referenceId,returnUrl
+            Note right of CYBS: Req: POST /risk/v1/authentication-results<br>vcMerchantId,merchantRef,expirationMonth,expirationYear,customerId,<br>totalAmount,currency,authenticationTransactionId
             CYBS->>-PCIPGW:Return VA result
             Note right of CYBS: Res: indicator,authenticationResult,authenticationStatusMsg,cavv,xid,<br>directoryServerTransactionId,threeDSServerTransactionId,specificationVersion,acsTransactionId,status,id
             
@@ -140,7 +140,7 @@ Process a Payment 3DS (timeout)
             PCIPGW->>PCIPGW: Front-End to Submit the Device Data Collection Iframe
             
             PCIPGW->>+CYBS:Call EnrollWithPendingAuthentication API
-            Note right of CYBS: Req: POST /risk/v1/authentications<br>vcMerchantId,merchantRef,expirationMonth,expirationYear,customerId,<br>totalAmount,currency,authenticationTransactionId
+            Note right of CYBS: Req: POST /risk/v1/authentications<br>vcMerchantId,merchantRef,expirationMonth,expirationYear,customerId,<br>totalAmount,currency,referenceId,returnUrl
             rect rgb(255, 220, 220)
               CYBS--XPCIPGW: xxx timeout xxx
             end
@@ -155,7 +155,7 @@ Process a Payment 3DS (timeout)
             PCIPGW->>PCIPGW: Customer to confirm OTP
             
             PCIPGW->>+CYBS:Call ValidateAuthenticationResults API
-            Note right of CYBS: Req: POST /risk/v1/authentication-results<br>vcMerchantId,merchantRef,expirationMonth,expirationYear,customerId,<br>totalAmount,currency,referenceId,returnUrl
+            Note right of CYBS: Req: POST /risk/v1/authentication-results<br>vcMerchantId,merchantRef,expirationMonth,expirationYear,customerId,<br>totalAmount,currency,authenticationTransactionId
             rect rgb(255, 220, 220)
               CYBS--XPCIPGW: xxx timeout xxx
             end
