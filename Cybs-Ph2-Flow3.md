@@ -88,7 +88,7 @@ Process a Payment (timeout)
         end
 ```
 
-Process a Payment (3DS)
+Process a Payment 3DS
 ```mermaid
     sequenceDiagram
     autonumber
@@ -105,14 +105,74 @@ Process a Payment (3DS)
             CYBS->>-PCIPGW:Return Enroll result
             Note right of CYBS: Res: challengeRequired,authenticationTransactionId,accessToken,pareq,directoryServerTransactionId,<br>threeDSServerTransactionId,specificationVersion,acsTransactionId,status,id
             
-            PCIPGW->>PCIPGW: Front-End to submit the Step-Up Iframe
+            Note right of CYBS: If it's frictionless,<br> the status will show as success or fail authetication immediately
+            
+            Note right of CYBS: If it's NOT frictionless,<br> the status will show as PENDING_AUTHENTICATION<br> and continue next step for Step-Up Iframe
+            
+            PCIPGW->>PCIPGW: Front-End to submit the Step-Up Iframe with width & high as enroll response
+            
+            PCIPGW->>PCIPGW: Customer to confirm OTP
             
             PCIPGW->>+CYBS:Call ValidateAuthenticationResults API
             Note right of CYBS: Req: POST /risk/v1/authentication-results<br>vcMerchantId,merchantRef,expirationMonth,expirationYear,customerId,<br>totalAmount,currency,referenceId,returnUrl
             CYBS->>-PCIPGW:Return VA result
             Note right of CYBS: Res: indicator,authenticationResult,authenticationStatusMsg,cavv,xid,<br>directoryServerTransactionId,threeDSServerTransactionId,specificationVersion,acsTransactionId,status,id
             
-            PCIPGW->>+CYBS:Call AuthorizationWithPayerAuthValidation API
+            PCIPGW->>+CYBS:Call AuthorizationWithPayerAuthSeparated API
+            Note right of CYBS: Req: POST /pts/v2/payments<br>vcMerchantId,paymentInstrumentId,merchantRef,transactionId,totalAmount,<br>currency,authenticationTransactionId
+            CYBS->>-PCIPGW:Return payment result
+            Note right of CYBS: Res:paymentId ("responseCode": "00","approvalCode": "831000",<BR>"status": "AUTHORIZED","id": "6575302598316189303954", & 3DS details)
+        end
+```
+
+Process a Payment 3DS (timeout)
+```mermaid
+    sequenceDiagram
+    autonumber
+        rect rgb(252, 255, 220)
+            PCIPGW->>+CYBS:Call SetupCompletionWithTMSToken API
+            Note right of CYBS: Req: POST /risk/v1/authentication-setups<br>vcMerchantId,merchantRef,expirationMonth,expirationYear,customerId
+            rect rgb(255, 220, 220)
+              CYBS--XPCIPGW: xxx timeout xxx
+            end
+            Note right of CYBS: Retry with the same request but re-generate clientReferenceInformation.code
+            
+            PCIPGW->>PCIPGW: Front-End to Submit the Device Data Collection Iframe
+            
+            PCIPGW->>+CYBS:Call EnrollWithPendingAuthentication API
+            Note right of CYBS: Req: POST /risk/v1/authentications<br>vcMerchantId,merchantRef,expirationMonth,expirationYear,customerId,<br>totalAmount,currency,authenticationTransactionId
+            rect rgb(255, 220, 220)
+              CYBS--XPCIPGW: xxx timeout xxx
+            end
+            Note right of CYBS: Retry with the same request but re-generate clientReferenceInformation.code
+            
+            Note right of CYBS: If it's frictionless,<br> the status will show as success or fail authetication immediately
+            
+            Note right of CYBS: If it's NOT frictionless,<br> the status will show as PENDING_AUTHENTICATION<br> and continue next step for Step-Up Iframe
+            
+            PCIPGW->>PCIPGW: Front-End to submit the Step-Up Iframe with width & high as enroll response
+            
+            PCIPGW->>PCIPGW: Customer to confirm OTP
+            
+            PCIPGW->>+CYBS:Call ValidateAuthenticationResults API
+            Note right of CYBS: Req: POST /risk/v1/authentication-results<br>vcMerchantId,merchantRef,expirationMonth,expirationYear,customerId,<br>totalAmount,currency,referenceId,returnUrl
+            rect rgb(255, 220, 220)
+              CYBS--XPCIPGW: xxx timeout xxx
+            end
+            Note right of CYBS: Retry with the same request but re-generate clientReferenceInformation.code
+            
+            PCIPGW->>+CYBS:Call AuthorizationWithPayerAuthSeparated API
+            Note right of CYBS: Req: POST /pts/v2/payments<br>vcMerchantId,paymentInstrumentId,merchantRef,transactionId,totalAmount,<br>currency,authenticationTransactionId
+            rect rgb(255, 220, 220)
+              CYBS--XPCIPGW: xxx timeout xxx
+            end
+            
+            PCIPGW->>+CYBS:Call TimeoutReversal API
+            Note right of CYBS: Req: POST /pts/v2/reversals<br>vcMerchantId,transactionId,totalAmount,reason
+            CYBS->>-PCIPGW:Return reverse result
+            Note right of CYBS: Res:paymentId ("responseCode": "00","approvalCode": "831000",<BR>"status": "REVERSED","id": "6576218032476857203955")
+            
+            PCIPGW->>+CYBS:Call AuthorizationWithPayerAuthSeparated API
             Note right of CYBS: Req: POST /pts/v2/payments<br>vcMerchantId,paymentInstrumentId,merchantRef,transactionId,totalAmount,<br>currency,authenticationTransactionId
             CYBS->>-PCIPGW:Return payment result
             Note right of CYBS: Res:paymentId ("responseCode": "00","approvalCode": "831000",<BR>"status": "AUTHORIZED","id": "6575302598316189303954", & 3DS details)
