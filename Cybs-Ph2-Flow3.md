@@ -109,9 +109,9 @@ Process a Payment 3DS
             
             Note right of CYBS: If it's NOT frictionless,<br> the status will show as PENDING_AUTHENTICATION<br> and continue next step for Step-Up Iframe
             
-            PCIPGW->>PCIPGW: Front-End to submit the Step-Up Iframe with width & high as enroll response
+            PCIPGW->>PCIPGW: Front-End to submit the Step-Up Iframe with width & high as enroll response and display OTP page on html page
             
-            PCIPGW->>PCIPGW: Customer to confirm OTP
+            Customer->>PCIPGW: Customer to confirm OTP
             
             PCIPGW->>+CYBS:Call ValidateAuthenticationResults API
             Note right of CYBS: Req: POST /risk/v1/authentication-results<br>vcMerchantId,merchantRef,expirationMonth,expirationYear,customerId,<br>totalAmount,currency,authenticationTransactionId
@@ -150,9 +150,9 @@ Process a Payment 3DS (timeout)
             
             Note right of CYBS: If it's NOT frictionless,<br> the status will show as PENDING_AUTHENTICATION<br> and continue next step for Step-Up Iframe
             
-            PCIPGW->>PCIPGW: Front-End to submit the Step-Up Iframe with width & high as enroll response
+            PCIPGW->>PCIPGW: Front-End to submit the Step-Up Iframe with width & high as enroll response and display OTP page on html page
             
-            PCIPGW->>PCIPGW: Customer to confirm OTP
+            Customer->>PCIPGW: Customer to confirm OTP
             
             PCIPGW->>+CYBS:Call ValidateAuthenticationResults API
             Note right of CYBS: Req: POST /risk/v1/authentication-results<br>vcMerchantId,merchantRef,expirationMonth,expirationYear,customerId,<br>totalAmount,currency,authenticationTransactionId
