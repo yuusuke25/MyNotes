@@ -111,13 +111,14 @@ Process a Payment 3DS
             
             PCIPGW->>PCIPGW: Front-End to submit the Step-Up Iframe with width & high as enroll response and display OTP page on html page
             
-            Customer->>PCIPGW: Customer to confirm OTP
+            Customer->>PCIPGW: Customer to confirm OTP & there will be notify from CYBS to call back returnUrl for transactionId
             
             PCIPGW->>+CYBS:Call ValidateAuthenticationResults API
             Note right of CYBS: Req: POST /risk/v1/authentication-results<br>vcMerchantId,merchantRef,expirationMonth,expirationYear,customerId,<br>totalAmount,currency,authenticationTransactionId
             CYBS->>-PCIPGW:Return VA result
             Note right of CYBS: Res: indicator,authenticationResult,authenticationStatusMsg,cavv,xid,<br>directoryServerTransactionId,threeDSServerTransactionId,specificationVersion,acsTransactionId,status,id
             
+            Note right of PCIPGW: if step number 5 or 9 get AUTHENTICATION_SUCCESSFULLY, then continue payment step10-11
             PCIPGW->>+CYBS:Call AuthorizationWithPayerAuthSeparated API
             Note right of CYBS: Req: POST /pts/v2/payments<br>vcMerchantId,paymentInstrumentId,merchantRef,transactionId,totalAmount,<br>currency,authenticationTransactionId
             CYBS->>-PCIPGW:Return payment result
@@ -135,7 +136,7 @@ Process a Payment 3DS (timeout)
             rect rgb(255, 220, 220)
               CYBS--XPCIPGW: xxx timeout xxx
             end
-            Note right of CYBS: Retry with the same request but re-generate clientReferenceInformation.code
+            Note right of CYBS: Return error to merchant
             
             PCIPGW->>PCIPGW: Front-End to Submit the Device Data Collection Iframe
             
@@ -144,13 +145,7 @@ Process a Payment 3DS (timeout)
             rect rgb(255, 220, 220)
               CYBS--XPCIPGW: xxx timeout xxx
             end
-            Note right of CYBS: Retry with the same request but re-generate clientReferenceInformation.code
-            
-            Note right of CYBS: If it's frictionless,<br> the status will show as success or fail authetication immediately
-            
-            Note right of CYBS: If it's NOT frictionless,<br> the status will show as PENDING_AUTHENTICATION<br> and continue next step for Step-Up Iframe
-            
-            PCIPGW->>PCIPGW: Front-End to submit the Step-Up Iframe with width & high as enroll response and display OTP page on html page
+            Note right of CYBS: Return error to merchant
             
             Customer->>PCIPGW: Customer to confirm OTP
             
@@ -159,7 +154,7 @@ Process a Payment 3DS (timeout)
             rect rgb(255, 220, 220)
               CYBS--XPCIPGW: xxx timeout xxx
             end
-            Note right of CYBS: Retry with the same request but re-generate clientReferenceInformation.code
+            Note right of CYBS: Return error to merchant
             
             PCIPGW->>+CYBS:Call AuthorizationWithPayerAuthSeparated API
             Note right of CYBS: Req: POST /pts/v2/payments<br>vcMerchantId,paymentInstrumentId,merchantRef,transactionId,totalAmount,<br>currency,authenticationTransactionId
@@ -167,6 +162,7 @@ Process a Payment 3DS (timeout)
               CYBS--XPCIPGW: xxx timeout xxx
             end
             
+            Note right of PCIPGW: SyncStateProcess
             PCIPGW->>+CYBS:Call TimeoutReversal API
             Note right of CYBS: Req: POST /pts/v2/reversals<br>vcMerchantId,transactionId,totalAmount,reason
             CYBS->>-PCIPGW:Return reverse result
