@@ -98,6 +98,9 @@ Process a Payment 3DS
             CYBS->>-PCIPGW:Return PA Setup result
             Note right of CYBS: Res: accessToken,referenceId,status,id
             
+            Note left of PCIPGW: Return merchant for redirectUrl if the status from above API is Completed
+            
+            Note right of PCIPGW: Once the merchant/customer go to the redirectUrl, the system will start html code on step below
             PCIPGW->>PCIPGW: Front-End to Submit the Device Data Collection Iframe
             
             PCIPGW->>+CYBS:Call EnrollWithPendingAuthentication API
