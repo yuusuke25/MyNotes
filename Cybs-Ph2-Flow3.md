@@ -88,7 +88,7 @@ Process a Payment (timeout)
         end
 ```
 
-Process a Payment 3DS
+Process a Payment 3DS - Old Solution, Don't use
 ```mermaid
     sequenceDiagram
     autonumber
@@ -129,7 +129,7 @@ Process a Payment 3DS
         end
 ```
 
-Process a Payment 3DS (timeout)
+Process a Payment 3DS (timeout) - Old Solution, Don't use
 ```mermaid
     sequenceDiagram
     autonumber
@@ -173,6 +173,33 @@ Process a Payment 3DS (timeout)
             
             PCIPGW->>+CYBS:Call AuthorizationWithPayerAuthSeparated API
             Note right of CYBS: Req: POST /pts/v2/payments<br>vcMerchantId,paymentInstrumentId,merchantRef,transactionId,totalAmount,<br>currency,authenticationTransactionId
+            CYBS->>-PCIPGW:Return payment result
+            Note right of CYBS: Res:paymentId ("responseCode": "00","approvalCode": "831000",<BR>"status": "AUTHORIZED","id": "6575302598316189303954", & 3DS details)
+        end
+```
+
+Process a Payment 3DS - New Solution 20220905
+```mermaid
+    sequenceDiagram
+    autonumber
+        rect rgb(252, 255, 220)            
+            Note right of PCIPGW: Follow the as-is 3DS flow, if the authentication successful<br>then authorize the transaction with CYBS payment API
+            PCIPGW->>+CYBS:Call AuthorizationWithPayerAuthSeparated API
+            Note right of CYBS: Req: POST /pts/v2/payments<br>vcMerchantId,paymentInstrumentId,merchantRef,transactionId,<br>totalAmount,currency,authenticationTransactionId,commerceIndicator,cavv,xid,<br>ucafCollectionIndicator,ucafAuthenticationData,paSpecificationVersion,directoryServerTransactionId
+            CYBS->>-PCIPGW:Return payment result
+            Note right of CYBS: Res:paymentId ("responseCode": "00","approvalCode": "831000",<BR>"status": "AUTHORIZED","id": "6575302598316189303954", & 3DS details)
+        end
+```
+
+Process a Payment 3DS (timeout) - New Solution 20220905
+```mermaid
+    sequenceDiagram
+    autonumber
+        rect rgb(252, 255, 220)
+            Note right of PCIPGW: Follow the as-is 3DS flow, if the authentication successful<br>then authorize the transaction with CYBS payment API
+            
+            PCIPGW->>+CYBS:Call AuthorizationWithPayerAuthSeparated API
+            Note right of CYBS: Req: POST /pts/v2/payments<br>vcMerchantId,paymentInstrumentId,merchantRef,transactionId,<br>totalAmount,currency,authenticationTransactionId,commerceIndicator,cavv,xid,<br>ucafCollectionIndicator,ucafAuthenticationData,paSpecificationVersion,directoryServerTransactionId
             CYBS->>-PCIPGW:Return payment result
             Note right of CYBS: Res:paymentId ("responseCode": "00","approvalCode": "831000",<BR>"status": "AUTHORIZED","id": "6575302598316189303954", & 3DS details)
         end
