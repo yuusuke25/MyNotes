@@ -495,7 +495,7 @@ API - Create Charge (Charge Process 3DS) - New Solution 20220905
                     
             alt
                 rect rgb(220, 251, 255)
-                autonumber 2
+                autonumber 7
                     Note right of PCIPGW: Check Company Config - Cybersource Authorization is Enabled
                     Note right of PCIPGW: AND matched with Company Config for card_brand(Visa,MC), card_type(onus/offus)
                     Note right of PCIPGW: AND also found CybsTokenID in the database (token_cybs.payment_instrument_id)
@@ -505,7 +505,7 @@ API - Create Charge (Charge Process 3DS) - New Solution 20220905
                 end
             else
                 rect rgb(220, 255, 229)
-                autonumber 2
+                autonumber 7
                     Note right of PCIPGW: does not meet the conditions
 
                     PCIPGW->>+KPGW:request charge,ECI,CAVV
@@ -552,7 +552,7 @@ API - Create Charge (Charge Process 3DS) - New Solution 20220905
                     
             alt
                 rect rgb(220, 251, 255)
-                autonumber 2
+                autonumber 7
                     Note right of PCIPGW: Check Company Config - Cybersource Authorization is Enabled
                     Note right of PCIPGW: AND matched with Company Config for card_brand(Visa,MC), card_type(onus/offus)
                     Note right of PCIPGW: AND also found CybsTokenID in the database (token_cybs.payment_instrument_id)
@@ -562,7 +562,7 @@ API - Create Charge (Charge Process 3DS) - New Solution 20220905
                 end
             else
                 rect rgb(220, 255, 229)
-                autonumber 2
+                autonumber 7
                     Note right of PCIPGW: does not meet the conditions
                     
                     PCIPGW->>+KPGW:request charge,ECI,CAVV
