@@ -369,7 +369,7 @@ API - Create Charge (Charge Process NON-3DS)
         end
 ```
 
-API - Create Charge (Charge Process 3DS)
+API - Create Charge (Charge Process 3DS) - Old Solution, Don't use
 ```mermaid
     sequenceDiagram
         autonumber 1
